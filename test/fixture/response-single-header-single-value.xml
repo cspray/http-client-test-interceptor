@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
+  <id>4c453ec2-142e-469c-bfee-d3cc8997e44e</id>
+  <createdAt>2022-01-01T13:00:00</createdAt>
+  <request>
+    <protocolVersions>
+      <protocolVersion>2</protocolVersion>
+    </protocolVersions>
+    <method>POST</method>
+    <uri>
+      <scheme>http</scheme>
+      <host>example.com</host>
+      <port />
+      <path>/</path>
+      <queryParameters />
+      <fragment />
+    </uri>
+    <headers />
+    <body />
+  </request>
+  <response>
+    <protocolVersion>1.1</protocolVersion>
+    <status>200</status>
+    <statusReason>OK</statusReason>
+    <headers>
+      <header>
+        <name>My-Response-Header</name>
+        <values>
+          <value>my-value</value>
+        </values>
+      </header>
+    </headers>
+    <body />
+  </response>
+</fixture>

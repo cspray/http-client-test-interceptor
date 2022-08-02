@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
+    <id>6fda31c9-4eea-4693-8236-9ff0d8d62c19</id>
+    <createdAt>2022-01-01T13:00:00</createdAt>
+    <request>
+        <protocolVersions>
+            <protocolVersion>2</protocolVersion>
+        </protocolVersions>
+        <method>POST</method>
+        <uri>
+            <scheme>http</scheme>
+            <host>example.com</host>
+            <port />
+            <path>/</path>
+            <queryParameters />
+            <fragment />
+        </uri>
+        <headers />
+        <body />
+    </request>
+    <response>
+        <protocolVersion>1.1</protocolVersion>
+        <status>404</status>
+        <statusReason>Not Found - My Custom Reason</statusReason>
+        <headers />
+        <body />
+    </response>
+</fixture>

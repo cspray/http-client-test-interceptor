@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema
+        xml:lang="en"
+        version="1.0"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        targetNamespace="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
+
+    <xs:element name="fixture" type="fixtureType" />
+
+    <xs:complexType name="fixtureType">
+        <xs:all>
+            <xs:element name="id" type="xs:token" />
+            <xs:element name="createdAt" type="xs:dateTime" />
+            <xs:element name="request" type="requestType" />
+            <xs:element name="response" type="responseType" />
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="requestType">
+        <xs:all>
+            <xs:element name="protocolVersions" type="protocolVersionsType" />
+            <xs:element name="method" type="xs:token" />
+            <xs:element name="uri" type="uriType" />
+            <xs:element name="headers" type="headersType" />
+            <xs:element name="body" type="xs:string" />
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="responseType">
+        <xs:all>
+            <xs:element name="protocolVersion" type="protocolVersionType" />
+            <xs:element name="status" type="xs:int" />
+            <xs:element name="statusReason" type="xs:token" />
+            <xs:element name="headers" type="headersType" />
+            <xs:element name="body" type="xs:string" />
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="protocolVersionsType">
+        <xs:sequence maxOccurs="unbounded">
+            <xs:element name="protocolVersion" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="protocolVersionType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="1.0" />
+            <xs:enumeration value="1.1" />
+            <xs:enumeration value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="headersType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="header" type="headerType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="headerType">
+        <xs:all>
+            <xs:element name="name" type="xs:token" />
+            <xs:element name="values">
+                <xs:complexType>
+                    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                        <xs:element name="value" type="xs:token" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="uriType">
+        <xs:all>
+            <xs:element name="scheme" type="xs:token" />
+            <xs:element name="host" type="xs:token" />
+            <xs:element name="port" type="portType" />
+            <xs:element name="path" type="xs:token" />
+            <xs:element name="queryParameters" type="queryParametersType" />
+            <xs:element name="fragment" type="xs:token" />
+        </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="portType">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:length value="0" />
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:int" />
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:complexType name="queryParametersType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="queryParameter" type="queryParameterType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="queryParameterType">
+        <xs:all>
+            <xs:element name="name" type="xs:token" />
+            <xs:element name="value" type="xs:token" />
+        </xs:all>
+    </xs:complexType>
+
+</xs:schema>

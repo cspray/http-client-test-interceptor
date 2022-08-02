@@ -1,0 +1,5 @@
+build/
+code-coverage/
+.phpunit.result.cache
+.phpunit.cache
+vendor/
