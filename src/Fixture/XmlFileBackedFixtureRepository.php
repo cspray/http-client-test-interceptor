@@ -167,7 +167,7 @@ final class XmlFileBackedFixtureRepository implements FixtureRepository {
                 foreach ($headerValues as $headerValue) {
                     $this->add(
                         $valuesElement,
-                        $this->element($dom, 'value', $headerValue)
+                        $this->element($dom, 'value', base64_encode($headerValue))
                     );
                 }
             }

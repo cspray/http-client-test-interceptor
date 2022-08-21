@@ -605,6 +605,7 @@ XML;
 
         self::assertFileExists('vfs://root/' . $id->toString());
 
+        $encodedAccept = base64_encode('text/plain');
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
@@ -628,7 +629,7 @@ XML;
       <header>
         <name>accept</name>
         <values>
-          <value>text/plain</value>
+          <value>$encodedAccept</value>
         </values>
       </header>
     </headers>
@@ -672,6 +673,9 @@ XML;
 
         self::assertFileExists('vfs://root/' . $id->toString());
 
+        $encodedOne = base64_encode('one');
+        $encodedTwo = base64_encode('two');
+        $encodedThree = base64_encode('three');
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
@@ -695,9 +699,9 @@ XML;
       <header>
         <name>my-custom-header</name>
         <values>
-          <value>one</value>
-          <value>two</value>
-          <value>three</value>
+          <value>$encodedOne</value>
+          <value>$encodedTwo</value>
+          <value>$encodedThree</value>
         </values>
       </header>
     </headers>
@@ -920,6 +924,11 @@ XML;
 
         self::assertFileExists('vfs://root/' . $id->toString());
 
+        $encodedContentType = base64_encode('application/json');
+        $encodedFoo = base64_encode('foo');
+        $encodedBar = base64_encode('bar');
+        $encodedBaz = base64_encode('baz');
+
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
@@ -950,15 +959,15 @@ XML;
       <header>
         <name>content-type</name>
         <values>
-          <value>application/json</value>
+          <value>$encodedContentType</value>
         </values>
       </header>
       <header>
         <name>custom-header</name>
         <values>
-          <value>foo</value>
-          <value>bar</value>
-          <value>baz</value>
+          <value>$encodedFoo</value>
+          <value>$encodedBar</value>
+          <value>$encodedBaz</value>
         </values>
       </header>
     </headers>

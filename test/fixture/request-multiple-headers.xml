@@ -19,13 +19,13 @@
             <header>
                 <name>Accept</name>
                 <values>
-                    <value>text/plain</value>
+                    <value>dGV4dC9wbGFpbg==</value>
                 </values>
             </header>
             <header>
                 <name>Content-Type</name>
                 <values>
-                    <value>application/json</value>
+                    <value>YXBwbGljYXRpb24vanNvbg==</value>
                 </values>
             </header>
         </headers>

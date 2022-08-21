@@ -129,7 +129,7 @@ final class XmlFileBackedFixture implements Fixture {
             $parsedValues = [];
             foreach ($values->getElementsByTagNameNS(Schemas::Xml->getNamespace(), 'value') as $value) {
                 assert($value instanceof DOMElement);
-                $parsedValues[] = $value->nodeValue;
+                $parsedValues[] = base64_decode($value->nodeValue);
             }
 
             $parsedHeaders[$name] = $parsedValues;
