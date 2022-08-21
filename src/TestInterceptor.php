@@ -32,6 +32,7 @@ final class TestInterceptor implements ApplicationInterceptor {
                 // stuff that should be included if for some reason the code under test calls $response->getRequest()
                 $response = $fixture->getResponse();
                 $response->setRequest($request);
+                $response->setHeader('HttpClient-TestInterceptor-Fixture-Id', $fixture->getId()->toString());
                 return $response;
             }
         }
@@ -48,9 +49,5 @@ final class TestInterceptor implements ApplicationInterceptor {
 
     public function getRequestMatchingStrategy() : RequestMatchingStrategy {
         return $this->requestMatchingStrategy;
-    }
-
-    public function getClock() : Clock {
-        return $this->clock;
     }
 }

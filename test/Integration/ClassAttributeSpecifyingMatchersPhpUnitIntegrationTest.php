@@ -10,6 +10,15 @@ use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 
+/**
+ * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
+ * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers
+ * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ */
 #[HttpFixture('vfs://root')]
 #[HttpRequestMatchers(
     Matchers::Uri

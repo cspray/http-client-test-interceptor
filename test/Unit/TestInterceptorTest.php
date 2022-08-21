@@ -16,6 +16,10 @@ use Cspray\HttpClientTestInterceptor\TestInterceptor;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
+ */
 final class TestInterceptorTest extends TestCase {
 
     public function testFixtureRepositoryEmptySavesResponseFromDelegatedHttpClient() : void {
@@ -132,6 +136,8 @@ final class TestInterceptorTest extends TestCase {
 
         self::assertSame($fixture1->getResponse(), $actualResponse);
         self::assertSame($actualResponse->getRequest(), $request);
+
+        self::assertSame($fixture1->getId()->toString(), $actualResponse->getHeader('HttpClient-TestInterceptor-Fixture-Id'));
 
         $fixtures = iterator_to_array($fixtureRepo->getFixtures());
 

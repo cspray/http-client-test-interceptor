@@ -12,6 +12,15 @@ use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use ReflectionClass;
 
+/**
+ * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
+ * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ */
 final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
 
     use HttpFixtureTrait;

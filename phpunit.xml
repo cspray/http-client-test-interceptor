@@ -25,9 +25,7 @@
         </include>
         <report>
             <text outputFile="php://stdout" showOnlySummary="true" />
-            <!--
             <html outputDirectory="code-coverage" />
-            -->
         </report>
     </coverage>
 </phpunit>

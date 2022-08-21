@@ -12,6 +12,14 @@ use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+/**
+ * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
+ * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ */
 #[HttpFixture('vfs://root')]
 final class ClassAttributePhpUnitIntegrationTest extends TestCase {
 
