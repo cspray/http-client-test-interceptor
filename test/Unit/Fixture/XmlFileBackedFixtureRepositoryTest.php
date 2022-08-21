@@ -993,7 +993,7 @@ XML;
         $subject->saveFixture($fixture);
 
         self::assertFileExists('vfs://root/' . $id->toString());
-
+        $content = base64_encode('My Body Content');
         $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <fixture xmlns="https://http-client-test-interceptor.cspray.io/schema/mock-fixture.xsd">
@@ -1021,7 +1021,7 @@ XML;
     <status>404</status>
     <statusReason>Not Found</statusReason>
     <headers/>
-    <body><![CDATA[My Body Content]]></body>
+    <body><![CDATA[$content]]></body>
   </response>
 </fixture>
 

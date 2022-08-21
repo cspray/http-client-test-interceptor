@@ -147,7 +147,7 @@ final class XmlFileBackedFixture implements Fixture {
             $statusCode,
             $statusReason,
             $this->parseHeaders($xpath, 'response'),
-            new ReadableBuffer($contents),
+            new ReadableBuffer(base64_decode($contents)),
             $this->request
         );
     }

@@ -23,6 +23,6 @@
     <status>200</status>
     <statusReason>OK</statusReason>
     <headers />
-    <body><![CDATA[<even><nested>xml</nested></even>]]></body>
+    <body><![CDATA[PGV2ZW4+PG5lc3RlZD54bWw8L25lc3RlZD48L2V2ZW4+]]></body>
   </response>
 </fixture>

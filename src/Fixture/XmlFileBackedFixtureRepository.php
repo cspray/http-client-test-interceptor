@@ -147,7 +147,7 @@ final class XmlFileBackedFixtureRepository implements FixtureRepository {
         $this->populateHeadersDom($dom, $headersElement, $response);
         $body = $response->getBody()->buffer();
         if ($body !== '') {
-            $bodyCdata = $dom->createCDATASection($body);
+            $bodyCdata = $dom->createCDATASection(base64_encode($body));
             $bodyElement->appendChild($bodyCdata);
         }
     }
