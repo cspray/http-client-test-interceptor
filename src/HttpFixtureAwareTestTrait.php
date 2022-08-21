@@ -11,13 +11,13 @@ use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
 use ReflectionClass;
 
-trait HttpFixtureTrait {
+trait HttpFixtureAwareTestTrait {
 
-    private ?TestInterceptor $testInterceptor = null;
+    private ?FixtureAwareInterceptor $testInterceptor = null;
 
     abstract public function getName(bool $withDataSet = true) : string;
 
-    private function getTestInterceptor() : TestInterceptor {
+    private function getFixtureAwareInterceptor() : FixtureAwareInterceptor {
         $reflection = new ReflectionClass($this::class);
         $reflectionMethod = $reflection->getMethod($this->getName(false));
 
@@ -39,12 +39,12 @@ trait HttpFixtureTrait {
         $testCaseMatchersAttributes = $reflection->getAttributes(HttpRequestMatchers::class);
         $testMatchersAttributes = $reflectionMethod->getAttributes(HttpRequestMatchers::class);
         if (count($testCaseMatchersAttributes) === 0 && count($testMatchersAttributes) === 0) {
-            $matcherStrategies = [
-                Matchers::Body->getStrategy(),
-                Matchers::Headers->getStrategy(),
-                Matchers::Method->getStrategy(),
-                Matchers::ProtocolVersions->getStrategy(),
-                Matchers::Uri->getStrategy()
+            $matchers = [
+                Matchers::Body,
+                Matchers::Headers,
+                Matchers::Method,
+                Matchers::ProtocolVersions,
+                Matchers::Uri
             ];
         } else {
             /** @var HttpRequestMatchers $httpRequestMatchers */
@@ -53,17 +53,14 @@ trait HttpFixtureTrait {
             } else {
                 $httpRequestMatchers = $testCaseMatchersAttributes[0]->newInstance();
             }
-            $matcherStrategies = [];
-            /** @var Matchers $matcher */
-            foreach ($httpRequestMatchers->matchers as $matcher) {
-                $matcherStrategies[] = $matcher->getStrategy();
-            }
+
+            $matchers = $httpRequestMatchers->matchers;
         }
 
         if ($this->testInterceptor === null) {
-            $this->testInterceptor = new TestInterceptor(
+            $this->testInterceptor = new FixtureAwareInterceptor(
                 new XmlFileBackedFixtureRepository($httpFixture->path, new InMemoryFixtureCache()),
-                new CompositeMatcher(...$matcherStrategies)
+                CompositeMatcher::fromMatchers(...$matchers)
             );
         }
 

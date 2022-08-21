@@ -1,20 +1,20 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor\Integration;
+namespace Cspray\HttpClientTestInterceptor\Acceptance\FixtureAware;
 
 use Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute;
-use Cspray\HttpClientTestInterceptor\HttpFixtureTrait;
+use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute
- * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
  */
 final class NoAttributePhpUnitIntegrationTest extends TestCase {
 
-    use HttpFixtureTrait;
+    use HttpFixtureAwareTestTrait;
 
     public function testExceptionThrownIfTestCaseHasNoFixtureAttribute() : void {
         self::expectException(MissingFixtureAttribute::class);
@@ -23,7 +23,7 @@ final class NoAttributePhpUnitIntegrationTest extends TestCase {
             __METHOD__
         ));
 
-        $this->getTestInterceptor();
+        $this->getFixtureAwareInterceptor();
     }
 
 }

@@ -12,12 +12,12 @@ use Cspray\HttpClientTestInterceptor\Helper\FixedClock;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixtureRepository;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
-use Cspray\HttpClientTestInterceptor\TestInterceptor;
+use Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  */
 final class TestInterceptorTest extends TestCase {
@@ -28,7 +28,7 @@ final class TestInterceptorTest extends TestCase {
         $requestMatchingStrategy->expects($this->never())->method('doesFixtureMatchRequest');
         $clock = new FixedClock($date = new DateTimeImmutable('2022-01-01 12:00:00'));
 
-        $subject = new TestInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
 
         $request = new Request('http://example.com');
         $response = new Response(
@@ -78,7 +78,7 @@ final class TestInterceptorTest extends TestCase {
             )->willReturn(false);
         $clock = new FixedClock($date = new DateTimeImmutable('2022-01-01 12:00:00'));
 
-        $subject = new TestInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
 
         $response = new Response(
             '1.1',
@@ -126,7 +126,7 @@ final class TestInterceptorTest extends TestCase {
             ->willReturn(true);
         $clock = new FixedClock(new DateTimeImmutable('2022-01-01 12:00:00'));
 
-        $subject = new TestInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
 
         $cancellation = $this->getMockBuilder(Cancellation::class)->getMock();
         $httpClient = $this->getMockBuilder(DelegateHttpClient::class)->getMock();

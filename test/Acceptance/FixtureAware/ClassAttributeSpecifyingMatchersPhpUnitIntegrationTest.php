@@ -1,23 +1,23 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor\Integration;
+namespace Cspray\HttpClientTestInterceptor\Acceptance\FixtureAware;
 
 use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
-use Cspray\HttpClientTestInterceptor\HttpFixtureTrait;
+use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
-use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
+use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
- * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
  */
 #[HttpFixture('vfs://root')]
 #[HttpRequestMatchers(
@@ -25,7 +25,7 @@ use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 )]
 final class ClassAttributeSpecifyingMatchersPhpUnitIntegrationTest extends TestCase {
 
-    use HttpFixtureTrait;
+    use HttpFixtureAwareTestTrait;
 
     protected function setUp() : void {
         parent::setUp();
@@ -33,7 +33,7 @@ final class ClassAttributeSpecifyingMatchersPhpUnitIntegrationTest extends TestC
     }
 
     public function testGetTestInterceptorRespectsRequestMatchers() : void {
-        $strategy = $this->getTestInterceptor()->getRequestMatchingStrategy();
+        $strategy = $this->getFixtureAwareInterceptor()->getRequestMatchingStrategy();
         self::assertInstanceOf(
             CompositeMatcher::class,
             $strategy

@@ -1,15 +1,15 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor\Integration;
+namespace Cspray\HttpClientTestInterceptor\Acceptance\FixtureAware;
 
 use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
-use Cspray\HttpClientTestInterceptor\HttpFixtureTrait;
+use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
-use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
@@ -17,13 +17,13 @@ use ReflectionClass;
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
- * @covers \Cspray\HttpClientTestInterceptor\TestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers
- * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureTrait::getTestInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
  */
 final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
 
-    use HttpFixtureTrait;
+    use HttpFixtureAwareTestTrait;
 
     protected function setUp() : void {
         $root = VirtualFilesystem::setup();
@@ -33,7 +33,7 @@ final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
     public function testFixturePathRespected() : void {
         $fixtureRepoReflection = new ReflectionClass(XmlFileBackedFixtureRepository::class);
         $fixtureDirProperty = $fixtureRepoReflection->getProperty('fixtureDir');
-        $value = $fixtureDirProperty->getValue($this->getTestInterceptor()->getFixtureRepository());
+        $value = $fixtureDirProperty->getValue($this->getFixtureAwareInterceptor()->getFixtureRepository());
 
         self::assertSame('vfs://root', $value);
     }
@@ -41,7 +41,7 @@ final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
     #[HttpFixture('vfs://root')]
     #[HttpRequestMatchers(Matchers::Body)]
     public function testRequestMatchersRespected() : void {
-        $matchingStrategy = $this->getTestInterceptor()->getRequestMatchingStrategy();
+        $matchingStrategy = $this->getFixtureAwareInterceptor()->getRequestMatchingStrategy();
         self::assertInstanceOf(
             CompositeMatcher::class,
             $matchingStrategy

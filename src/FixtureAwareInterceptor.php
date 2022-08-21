@@ -12,7 +12,7 @@ use Cspray\HttpClientTestInterceptor\Fixture\FixtureRepository;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
 
-final class TestInterceptor implements ApplicationInterceptor {
+final class FixtureAwareInterceptor implements ApplicationInterceptor {
 
     private readonly Clock $clock;
 
