@@ -14,6 +14,10 @@ trait HttpMockingTestTrait {
         return $this->mockingInterceptor;
     }
 
+    public function validateHttpMocks(HttpMockerRequiredInvocations $requiredInvocations = HttpMockerRequiredInvocations::All) : void {
+        $this->getMockingInterceptor()->validate($requiredInvocations);
+    }
+
     public function httpMock() : HttpMocker {
         return $this->getMockingInterceptor()->httpMock();
     }

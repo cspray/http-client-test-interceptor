@@ -92,7 +92,7 @@ final class ApiHeadersMatchingUnitTest extends TestCase {
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
         
         // We match on the values of the mocked Request ... NOT the identity of the object
-        $actualRequest = new Request(Http::createFromString('http://example.com'), 'POST');
+        $actualRequest = new Request('http://example.com', 'POST');
         $actualRequest->setHeader('Authorization', 'some-token');
         $actual = $client->request($actualRequest);
         

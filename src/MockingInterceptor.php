@@ -9,6 +9,7 @@ use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
+use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
@@ -16,7 +17,7 @@ use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStra
 
 class MockingInterceptor implements ApplicationInterceptor {
 
-    /** @var list<HttpMocker> */
+    /** @var list<HttpMockerValidator> */
     private array $httpMockers = [];
 
     private readonly Clock $clock;
@@ -47,9 +48,63 @@ class MockingInterceptor implements ApplicationInterceptor {
                 return $this;
             }
         };
-        $this->httpMockers[] = $mocker;
+
+        $mockerValidator = new class($mocker, $this->clock) implements HttpMockerValidator {
+
+            private bool $isMatched = false;
+
+            /**
+             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatchingStrategy} $mocker
+             */
+            public function __construct(
+                private readonly HttpMocker $mocker,
+                private readonly Clock $clock
+            ) {}
+
+            public function matches(Request $request) : ?Response {
+                if ($this->mocker->request === null && $this->mocker->response === null) {
+                    throw InvalidMock::fromNoRequestAndResponse();
+                } else if ($this->mocker->response === null) {
+                    throw InvalidMock::fromNoResponse();
+                } else if ($this->mocker->request === null) {
+                    throw InvalidMock::fromNoRequest();
+                }
+                $fixture = new InFlightFixture($this->mocker->request, $this->mocker->response, $this->clock->now());
+                if ($this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request)) {
+                    $response = $fixture->getResponse();
+                    $response->setRequest($request);
+                    $this->isMatched = true;
+                    return $response;
+                }
+
+                return null;
+            }
+
+            public function hasMockBeenMatched() : bool {
+                return $this->isMatched;
+            }
+        };
+
+        $this->httpMockers[] = $mockerValidator;
 
         return $mocker;
+    }
+
+    public function validate(HttpMockerRequiredInvocations $requiredInvocations = HttpMockerRequiredInvocations::All) : void {
+        $totalMocks = count($this->httpMockers);
+        $matchedMocks = 0;
+
+        foreach ($this->httpMockers as $mocker) {
+            if ($mocker->hasMockBeenMatched()) {
+                $matchedMocks++;
+            }
+        }
+
+        if ($totalMocks !== $matchedMocks && $requiredInvocations->isAll()) {
+            throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, $matchedMocks, $requiredInvocations);
+        } else if ($matchedMocks === 0 && $requiredInvocations->isAny()) {
+            throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, 0, $requiredInvocations);
+        }
     }
 
     public function request(Request $request, Cancellation $cancellation, DelegateHttpClient $httpClient) : Response {
@@ -58,20 +113,12 @@ class MockingInterceptor implements ApplicationInterceptor {
         }
 
         foreach ($this->httpMockers as $httpMocker) {
-            if ($httpMocker->request === null && $httpMocker->response === null) {
-                throw InvalidMock::fromNoRequestAndResponse();
-            } else if ($httpMocker->response === null) {
-                throw InvalidMock::fromNoResponse();
-            } else if ($httpMocker->request === null) {
-                throw InvalidMock::fromNoRequest();
-            }
-            $fixture = new InFlightFixture($httpMocker->request, $httpMocker->response, $this->clock->now());
-            if ($httpMocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request)) {
-                $response = $fixture->getResponse();
-                $response->setRequest($request);
+            $response = $httpMocker->matches($request);
+            if ($response instanceof Response) {
                 return $response;
             }
         }
+
         throw RequestNotMocked::fromRequestNotMatched($request);
     }
 }
