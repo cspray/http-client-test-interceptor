@@ -13,11 +13,11 @@ enum Matchers {
         static $cache = [];
         if (!isset($cache[$this->name])) {
             $cache[$this->name] = match($this) {
-                Matchers::Body => new BodyMatcher(),
-                Matchers::Headers => new HeadersMatcher(),
-                Matchers::Method => new MethodMatcher(),
-                Matchers::ProtocolVersions => new ProtocolVersionsMatcher(),
-                Matchers::Uri => new UriMatcher()
+                self::Body => new BodyMatcher(),
+                self::Headers => new HeadersMatcher(),
+                self::Method => new MethodMatcher(),
+                self::ProtocolVersions => new ProtocolVersionsMatcher(),
+                self::Uri => new UriMatcher()
             };
         }
 
