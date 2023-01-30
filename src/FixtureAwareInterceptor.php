@@ -10,7 +10,7 @@ use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Fixture\FixtureRepository;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
 
 final class FixtureAwareInterceptor implements ApplicationInterceptor {
 

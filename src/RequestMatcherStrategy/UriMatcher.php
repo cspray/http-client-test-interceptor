@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;

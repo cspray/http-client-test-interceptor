@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Body\StringBody;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher
  */
 final class BodyMatcherTest extends TestCase {
 

@@ -11,7 +11,7 @@ use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\FixedClock;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixtureRepository;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
 use Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;

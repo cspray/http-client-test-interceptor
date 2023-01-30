@@ -11,8 +11,8 @@ use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
 
 class MockingInterceptor implements ApplicationInterceptor {
 
@@ -63,11 +63,16 @@ class MockingInterceptor implements ApplicationInterceptor {
             public function matches(Request $request) : ?Response {
                 if ($this->mocker->request === null && $this->mocker->response === null) {
                     throw InvalidMock::fromNoRequestAndResponse();
-                } else if ($this->mocker->response === null) {
+                }
+
+                if ($this->mocker->response === null) {
                     throw InvalidMock::fromNoResponse();
-                } else if ($this->mocker->request === null) {
+                }
+
+                if ($this->mocker->request === null) {
                     throw InvalidMock::fromNoRequest();
                 }
+
                 $fixture = new InFlightFixture($this->mocker->request, $this->mocker->response, $this->clock->now());
                 if ($this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request)) {
                     $response = $fixture->getResponse();
@@ -101,7 +106,9 @@ class MockingInterceptor implements ApplicationInterceptor {
 
         if ($totalMocks !== $matchedMocks && $requiredInvocations->isAll()) {
             throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, $matchedMocks, $requiredInvocations);
-        } else if ($matchedMocks === 0 && $requiredInvocations->isAny()) {
+        }
+
+        if ($matchedMocks === 0 && $requiredInvocations->isAny()) {
             throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, 0, $requiredInvocations);
         }
     }

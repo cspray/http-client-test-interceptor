@@ -7,7 +7,7 @@ use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
 use Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute;
 use Cspray\HttpClientTestInterceptor\Fixture\InMemoryFixtureCache;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
 use ReflectionClass;
 
 trait HttpFixtureAwareTestTrait {

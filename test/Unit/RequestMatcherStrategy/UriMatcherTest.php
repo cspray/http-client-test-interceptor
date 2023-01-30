@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher
  */
 final class UriMatcherTest extends TestCase {
 

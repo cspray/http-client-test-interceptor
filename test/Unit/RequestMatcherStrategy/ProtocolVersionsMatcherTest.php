@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher
  */
 final class ProtocolVersionsMatcherTest extends TestCase {
 

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\HeadersMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher;
 use PHPUnit\Framework\TestCase;
 
 /**

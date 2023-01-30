@@ -22,10 +22,10 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\MockResponse
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher
  * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher
  */
 final class MockingInterceptorTest extends TestCase {
 

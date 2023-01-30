@@ -2,12 +2,12 @@
 
 namespace Cspray\HttpClientTestInterceptor;
 
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\HeadersMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher;
 
 enum Matcher {
     case Body;

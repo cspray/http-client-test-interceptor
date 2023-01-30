@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher
  */
 final class CompositeMatcherTest extends TestCase {
 
