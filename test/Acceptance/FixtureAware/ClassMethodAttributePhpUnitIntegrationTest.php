@@ -7,7 +7,7 @@ use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
 use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -16,7 +16,7 @@ use ReflectionClass;
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers
  * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
@@ -39,7 +39,7 @@ final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
     }
 
     #[HttpFixture('vfs://root')]
-    #[HttpRequestMatchers(Matchers::Body)]
+    #[HttpRequestMatchers(Matcher::Body)]
     public function testRequestMatchersRespected() : void {
         $matchingStrategy = $this->getFixtureAwareInterceptor()->getRequestMatchingStrategy();
         self::assertInstanceOf(
@@ -47,7 +47,7 @@ final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
             $matchingStrategy
         );
         self::assertSame([
-            Matchers::Body->getStrategy()
+            Matcher::Body->getStrategy()
         ], $matchingStrategy->getStrategies());
     }
 

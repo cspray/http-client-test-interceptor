@@ -8,7 +8,7 @@ use Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute;
 use Cspray\HttpClientTestInterceptor\Fixture\InMemoryFixtureCache;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use ReflectionClass;
 
 trait HttpFixtureAwareTestTrait {
@@ -40,11 +40,11 @@ trait HttpFixtureAwareTestTrait {
         $testMatchersAttributes = $reflectionMethod->getAttributes(HttpRequestMatchers::class);
         if (count($testCaseMatchersAttributes) === 0 && count($testMatchersAttributes) === 0) {
             $matchers = [
-                Matchers::Body,
-                Matchers::Headers,
-                Matchers::Method,
-                Matchers::ProtocolVersions,
-                Matchers::Uri
+                Matcher::Body,
+                Matcher::Headers,
+                Matcher::Method,
+                Matcher::ProtocolVersions,
+                Matcher::Uri
             ];
         } else {
             /** @var HttpRequestMatchers $httpRequestMatchers */

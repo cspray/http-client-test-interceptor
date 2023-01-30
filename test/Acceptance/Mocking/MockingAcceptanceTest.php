@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  * @covers \Cspray\HttpClientTestInterceptor\MockResponse
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock

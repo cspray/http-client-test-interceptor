@@ -12,7 +12,7 @@ use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
 
 class MockingInterceptor implements ApplicationInterceptor {
@@ -34,7 +34,7 @@ class MockingInterceptor implements ApplicationInterceptor {
             public ?Response $response = null;
             public ?RequestMatchingStrategy $matchingStrategy = null;
 
-            public function whenClientReceivesRequest(Request $request, array $matchers = [Matchers::Method, Matchers::Uri]) : HttpMocker {
+            public function whenClientReceivesRequest(Request $request, array $matchers = [Matcher::Method, Matcher::Uri]) : HttpMocker {
                 if ($matchers === []) {
                     throw InvalidMock::fromEmptyMatchers();
                 }

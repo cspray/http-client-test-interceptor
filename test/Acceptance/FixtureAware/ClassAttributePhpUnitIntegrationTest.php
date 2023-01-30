@@ -6,7 +6,7 @@ use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
 use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ use ReflectionClass;
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
  */
 #[HttpFixture('vfs://root')]
@@ -59,11 +59,11 @@ final class ClassAttributePhpUnitIntegrationTest extends TestCase {
 
         self::assertInstanceOf(CompositeMatcher::class, $strategy);
         self::assertSame([
-            Matchers::Body->getStrategy(),
-            Matchers::Headers->getStrategy(),
-            Matchers::Method->getStrategy(),
-            Matchers::ProtocolVersions->getStrategy(),
-            Matchers::Uri->getStrategy()
+            Matcher::Body->getStrategy(),
+            Matcher::Headers->getStrategy(),
+            Matcher::Method->getStrategy(),
+            Matcher::ProtocolVersions->getStrategy(),
+            Matcher::Uri->getStrategy()
         ], $strategy->getStrategies());
     }
 

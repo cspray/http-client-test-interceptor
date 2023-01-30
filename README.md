@@ -75,7 +75,7 @@ use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;
 use Amp\Http\Client\Request;
 use Amp\Http\Client\HttpClientBuilder;
 use Cspray\HttpClientTestInterceptor\MockResponse;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;use League\Uri\Http;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
 
 final class ApiHeadersMatchingUnitTest extends TestCase {
@@ -86,7 +86,7 @@ final class ApiHeadersMatchingUnitTest extends TestCase {
         $request = new Request(Http::createFromString('http://example.com'), 'POST');
         $request->setHeader('Authorization', 'some-token');
         $response = MockResponse::fromBody('My expected body');
-        $this->httpMock()->whenClientReceivesRequest($request, [Matchers::Uri, Matchers::Method, Matchers::Headers])
+        $this->httpMock()->whenClientReceivesRequest($request, [Matcher::Uri, Matcher::Method, Matcher::Headers])
             ->willReturnResponse($response);
             
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
@@ -168,11 +168,11 @@ use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use PHPUnit\Framework\TestCase;
 
 #[HttpFixture(__DIR__ . '/http_fixture')]
-#[HttpRequestMatchers(Matchers::Method, Matchers::Uri)]
+#[HttpRequestMatchers(Matcher::Method, Matcher::Uri)]
 final class ApiTest extends TestCase {
 
     use HttpFixtureAwareTestTrait;

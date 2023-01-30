@@ -2,7 +2,7 @@
 
 namespace Cspray\HttpClientTestInterceptor\RequestMatchingStrategy;
 
-enum Matchers {
+enum Matcher {
     case Body;
     case Headers;
     case Method;

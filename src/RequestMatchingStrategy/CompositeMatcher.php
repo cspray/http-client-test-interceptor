@@ -19,7 +19,7 @@ final class CompositeMatcher implements RequestMatchingStrategy {
         $this->strategies = array_merge([$strategy], $additionalStrategies);
     }
 
-    public static function fromMatchers(Matchers $matchers, Matchers... $additionalMatchers) : self {
+    public static function fromMatchers(Matcher $matchers, Matcher... $additionalMatchers) : self {
         $strategies = [$matchers->getStrategy()];
         foreach ($additionalMatchers as $matcher) {
             $strategies[] = $matcher->getStrategy();
