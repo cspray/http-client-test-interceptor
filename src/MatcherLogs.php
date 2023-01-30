@@ -1,8 +1,8 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor;
 
-final class MatcherFailureLogs {
+final class MatcherLogs {
 
     /**
      * @var list<array{matcher: Matcher, msg: string}>

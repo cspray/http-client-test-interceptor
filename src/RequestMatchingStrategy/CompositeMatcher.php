@@ -4,6 +4,7 @@ namespace Cspray\HttpClientTestInterceptor\RequestMatchingStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher;
 
 final class CompositeMatcher implements RequestMatchingStrategy {
 

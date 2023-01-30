@@ -2,16 +2,16 @@
 
 namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
 
+use Cspray\HttpClientTestInterceptor\Matcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
  */
 final class MatchersTest extends TestCase {
 

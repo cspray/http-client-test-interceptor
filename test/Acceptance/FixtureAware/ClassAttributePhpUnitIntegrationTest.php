@@ -5,8 +5,8 @@ namespace Cspray\HttpClientTestInterceptor\Acceptance\FixtureAware;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
 use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
+use Cspray\HttpClientTestInterceptor\Matcher;
 use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ use ReflectionClass;
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
  */
 #[HttpFixture('vfs://root')]

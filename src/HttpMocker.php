@@ -4,7 +4,6 @@ namespace Cspray\HttpClientTestInterceptor;
 
 use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
 
 interface HttpMocker {
 

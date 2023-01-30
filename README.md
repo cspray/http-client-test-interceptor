@@ -71,12 +71,7 @@ Because mocks require more manual setup the way they get matched uses a looser s
 
 namespace Acme\HttpMockingDemo;
 
-use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;
-use Amp\Http\Client\Request;
-use Amp\Http\Client\HttpClientBuilder;
-use Cspray\HttpClientTestInterceptor\MockResponse;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;use League\Uri\Http;
-use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use Cspray\HttpClientTestInterceptor\MockResponse;use League\Uri\Http;use PHPUnit\Framework\TestCase;
 
 final class ApiHeadersMatchingUnitTest extends TestCase {
 
@@ -163,13 +158,7 @@ Out-of-the-box the library will attempt to match every aspect of the Request aga
 
 namespace Acme\HttpFixtureDemo;
 
-use Amp\Http\Client\HttpClientBuilder;
-use Amp\Http\Client\Request;
-use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
-use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
-use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matcher;
-use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use PHPUnit\Framework\TestCase;
 
 #[HttpFixture(__DIR__ . '/http_fixture')]
 #[HttpRequestMatchers(Matcher::Method, Matcher::Uri)]

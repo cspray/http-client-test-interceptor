@@ -1,6 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor;
+
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\BodyMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\ProtocolVersionsMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher;
 
 enum Matcher {
     case Body;
