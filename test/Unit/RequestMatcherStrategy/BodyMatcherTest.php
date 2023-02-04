@@ -5,32 +5,52 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 use Amp\Http\Client\Body\StringBody;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
+use Cspray\HttpClientTestInterceptor\Matcher;
+use Cspray\HttpClientTestInterceptor\MatcherResult;
 use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
  */
 final class BodyMatcherTest extends TestCase {
-
-    private BodyMatcher $subject;
-
-    protected function setUp() : void {
-        $this->subject = new BodyMatcher();
-    }
 
     public function testBodyMatchesReturnsTrue() : void {
         $fixture = StubFixture::fromRequest(new Request('http://example.com', body: 'The request body'));
         $request = new Request('http://not.example.com', body: new StringBody('The request body'));
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Body->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher(
+            $results,
+            Matcher::Body->getStrategy(),
+            'Fixture and Request body matches.'
+        );
     }
 
     public function testBodyDoesNotMatchReturnsFalse() : void {
         $fixture = StubFixture::fromRequest(new Request('http://example.com', body: 'A different request body'));
         $request = new Request('http://not.example.com', body: new StringBody('The request body'));
 
-        self::assertFalse($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Body->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        $expectedDiff = (new Differ(new UnifiedDiffOutputBuilder("--- Fixture\n+++ Request\n", false)))
+            ->diff('A different request body', 'The request body');
+
+        $expectedLog = <<<TEXT
+Fixture and Request body do not match!
+
+{$expectedDiff}
+TEXT;
+
+        MatcherResultAssertion::assertFailedMatcher($results, Matcher::Body->getStrategy(), $expectedLog);
     }
 
 }

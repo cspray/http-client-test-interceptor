@@ -4,19 +4,19 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
+use Cspray\HttpClientTestInterceptor\Matcher;
 use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher;
+use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
  */
 final class ProtocolVersionsMatcherTest extends TestCase {
-
-    private ProtocolVersionsMatcher $subject;
-
-    protected function setUp() : void {
-        $this->subject = new ProtocolVersionsMatcher();
-    }
 
     public function testSingleProtocolVersionMatches() : void {
         $fixture = StubFixture::fromRequestFactory(function() {
@@ -27,7 +27,9 @@ final class ProtocolVersionsMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setProtocolVersions(['1.0']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::ProtocolVersions->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::ProtocolVersions->getStrategy(), 'Fixture and Request protocol versions match');
     }
 
     public function testSingleProtocolVersionDoNotMatch() : void {
@@ -39,7 +41,18 @@ final class ProtocolVersionsMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setProtocolVersions(['1.1']);
 
-        self::assertFalse($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $expectedDiff = (new Differ(new UnifiedDiffOutputBuilder("--- Fixture\n+++ Request\n", false)))
+            ->diff(['1.0'], ['1.1']);
+
+        $expectedLog = <<<TEXT
+Fixture and Request protocol versions do not match!
+
+$expectedDiff
+TEXT;
+
+        $results = Matcher::ProtocolVersions->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertFailedMatcher($results, Matcher::ProtocolVersions->getStrategy(), $expectedLog);
     }
 
     public function testMultipleProtocolVersionsMatch() : void {
@@ -51,7 +64,9 @@ final class ProtocolVersionsMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setProtocolVersions(['1.0', '2']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::ProtocolVersions->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::ProtocolVersions->getStrategy(), 'Fixture and Request protocol versions match');
     }
 
     public function testMultipleProtocolVersionsDoNotMatch() : void {
@@ -63,7 +78,18 @@ final class ProtocolVersionsMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setProtocolVersions(['1.0', '2']);
 
-        self::assertFalse($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $expectedDiff = (new Differ(new UnifiedDiffOutputBuilder("--- Fixture\n+++ Request\n", false)))
+            ->diff(['1.1', '2'], ['1.0', '2']);
+
+        $expectedLog = <<<TEXT
+Fixture and Request protocol versions do not match!
+
+$expectedDiff
+TEXT;
+
+        $results = Matcher::ProtocolVersions->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertFailedMatcher($results, Matcher::ProtocolVersions->getStrategy(), $expectedLog);
     }
 
     public function testMultipleProtocolVersionsAreNotSortDependent() : void {
@@ -75,7 +101,9 @@ final class ProtocolVersionsMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setProtocolVersions(['2', '1.1']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::ProtocolVersions->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::ProtocolVersions->getStrategy(), 'Fixture and Request protocol versions match');
     }
 
 }

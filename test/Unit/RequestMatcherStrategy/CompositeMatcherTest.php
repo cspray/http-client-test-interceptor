@@ -4,79 +4,50 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
+use Cspray\HttpClientTestInterceptor\Matcher;
+use Cspray\HttpClientTestInterceptor\MatcherResult;
 use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher
  */
 final class CompositeMatcherTest extends TestCase {
 
-    public function testCompositeMatchersOnePassed() : void {
-        $fixture = StubFixture::fromRequest(new Request('http://example.com'));
-        $request = new Request('http://example.com');
+    public function testAllComposedMatcherResultsIsMatched() : void {
+        $fixture = StubFixture::fromRequest(new Request('https://www.example.com/some/path', 'POST'));
+        $request = new Request('https://www.example.com/some/path', 'POST');
 
-        $matcher = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(true);
+        $results = Matcher::All->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+        $actual = array_map(static fn(MatcherResult $result) => $result->isMatched, $results);
 
-        $subject = new CompositeMatcher($matcher);
-
-        self::assertTrue($subject->doesFixtureMatchRequest($fixture, $request));
+        self::assertCount(5, $results);
+        self::assertSame([true, true, true, true, true], $actual);
     }
 
-    public function testCompositeMatchersMultiplePassed() : void {
-        $fixture = StubFixture::fromRequest(new Request('http://example.com'));
-        $request = new Request('http://example.com');
+    public function testAllComposedMatcherResultsIsCorrectMatcherType() : void {
+        $fixture = StubFixture::fromRequest(new Request('https://www.example.com/some/path', 'POST'));
+        $request = new Request('https://www.example.com/some/path', 'POST');
 
-        $matcher = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(true);
+        $results = Matcher::All->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+        $actual = array_map(static fn(MatcherResult $result) => $result->matcherStrategy, $results);
 
-        $matcher2 = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher2->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(true);
-
-        $matcher3 = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher3->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(true);
-
-        $subject = new CompositeMatcher($matcher, $matcher2, $matcher3);
-
-        self::assertTrue($subject->doesFixtureMatchRequest($fixture, $request));
+        self::assertCount(5, $results);
+        self::assertSame([
+            Matcher::Uri->getStrategy(),
+            Matcher::Method->getStrategy(),
+            Matcher::Headers->getStrategy(),
+            Matcher::Body->getStrategy(),
+            Matcher::ProtocolVersions->getStrategy()
+        ], $actual);
     }
 
-    public function testCompositeMatchersPassedSomeReturnFalse() : void {
-        $fixture = StubFixture::fromRequest(new Request('http://example.com'));
-        $request = new Request('http://example.com');
-
-        $matcher = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(true);
-
-        $matcher2 = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher2->expects($this->once())
-            ->method('doesFixtureMatchRequest')
-            ->with($fixture, $request)
-            ->willReturn(false);
-
-        $matcher3 = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
-        $matcher3->expects($this->never())
-            ->method('doesFixtureMatchRequest');
-
-        $subject = new CompositeMatcher($matcher, $matcher2, $matcher3);
-
-        self::assertFalse($subject->doesFixtureMatchRequest($fixture, $request));
-    }
 }

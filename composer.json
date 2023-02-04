@@ -9,7 +9,8 @@
     "amphp/http-client": "v5.0.0-beta.7",
     "ramsey/uuid": "^4.3",
     "league/uri": "^6.7",
-    "league/uri-components": "^2.4"
+    "league/uri-components": "^2.4",
+    "sebastian/diff": "^4.0"
   },
   "require-dev": {
     "amphp/phpunit-util": "^v3.0",

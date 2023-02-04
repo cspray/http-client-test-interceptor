@@ -11,7 +11,8 @@ use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\FixedClock;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixtureRepository;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\MatcherResult;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
 use Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
@@ -19,12 +20,13 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
+ * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
  */
 final class TestInterceptorTest extends TestCase {
 
     public function testFixtureRepositoryEmptySavesResponseFromDelegatedHttpClient() : void {
         $fixtureRepo = new StubFixtureRepository();
-        $requestMatchingStrategy = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
+        $requestMatchingStrategy = $this->getMockBuilder(RequestMatcherStrategy::class)->getMock();
         $requestMatchingStrategy->expects($this->never())->method('doesFixtureMatchRequest');
         $clock = new FixedClock($date = new DateTimeImmutable('2022-01-01 12:00:00'));
 
@@ -69,13 +71,13 @@ final class TestInterceptorTest extends TestCase {
         );
 
         $request = new Request('http://sub.example.com');
-        $requestMatchingStrategy = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
+        $requestMatchingStrategy = $this->getMockBuilder(RequestMatcherStrategy::class)->getMock();
         $requestMatchingStrategy->expects($this->exactly(2))
             ->method('doesFixtureMatchRequest')
             ->withConsecutive(
                 [$fixture1, $request],
                 [$fixture2, $request]
-            )->willReturn(false);
+            )->willReturn([new MatcherResult(false, $requestMatchingStrategy, 'Mock request failure')]);
         $clock = new FixedClock($date = new DateTimeImmutable('2022-01-01 12:00:00'));
 
         $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
@@ -119,11 +121,11 @@ final class TestInterceptorTest extends TestCase {
         );
 
         $request = new Request('http://sub.example.com');
-        $requestMatchingStrategy = $this->getMockBuilder(RequestMatchingStrategy::class)->getMock();
+        $requestMatchingStrategy = $this->getMockBuilder(RequestMatcherStrategy::class)->getMock();
         $requestMatchingStrategy->expects($this->exactly(1))
             ->method('doesFixtureMatchRequest')
             ->with($fixture1, $request)
-            ->willReturn(true);
+            ->willReturn([new MatcherResult(true, $requestMatchingStrategy, 'Mocked request success')]);
         $clock = new FixedClock(new DateTimeImmutable('2022-01-01 12:00:00'));
 
         $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);

@@ -5,39 +5,38 @@ namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Matcher;
+use Cspray\HttpClientTestInterceptor\MatcherResult;
 
-final class CompositeMatcher implements RequestMatchingStrategy {
+final class CompositeMatcher implements RequestMatcherStrategy {
 
     /**
-     * @var RequestMatchingStrategy[]
+     * @var Matcher[]
      */
-    private readonly array $strategies;
+    private readonly array $matchers;
 
-    public function __construct(
-        RequestMatchingStrategy $strategy,
-        RequestMatchingStrategy... $additionalStrategies
+    private function __construct(
+        Matcher $matcher,
+        Matcher... $additionalMatchers
     ) {
-        $this->strategies = array_merge([$strategy], $additionalStrategies);
+        $this->matchers = array_merge([$matcher], $additionalMatchers);
     }
 
-    public static function fromMatchers(Matcher $matchers, Matcher... $additionalMatchers) : self {
-        $strategies = [$matchers->getStrategy()];
-        foreach ($additionalMatchers as $matcher) {
-            $strategies[] = $matcher->getStrategy();
-        }
-        return new self(...$strategies);
+    public static function fromMatchers(Matcher $matcher, Matcher... $additionalMatchers) : self {
+        return new self($matcher, ...$additionalMatchers);
     }
 
-    public function getStrategies() : array {
-        return $this->strategies;
+    public function getMatchers() : array {
+        return $this->matchers;
     }
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : bool {
-        foreach ($this->strategies as $strategy) {
-            if (!$strategy->doesFixtureMatchRequest($fixture, $request)) {
-                return false;
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : array {
+        $results = [];
+        foreach ($this->matchers as $matcher) {
+            $matcherResults = $matcher->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+            foreach ($matcherResults as $result) {
+                $results[] = $result;
             }
         }
-        return true;
+        return $results;
     }
 }

@@ -47,8 +47,8 @@ final class ClassMethodAttributePhpUnitIntegrationTest extends TestCase {
             $matchingStrategy
         );
         self::assertSame([
-            Matcher::Body->getStrategy()
-        ], $matchingStrategy->getStrategies());
+            Matcher::Body
+        ], $matchingStrategy->getMatchers());
     }
 
 }

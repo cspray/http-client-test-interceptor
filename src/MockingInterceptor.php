@@ -12,7 +12,7 @@ use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
 use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
 
 class MockingInterceptor implements ApplicationInterceptor {
 
@@ -31,7 +31,7 @@ class MockingInterceptor implements ApplicationInterceptor {
         $mocker = new class implements HttpMocker {
             public ?Request $request = null;
             public ?Response $response = null;
-            public ?RequestMatchingStrategy $matchingStrategy = null;
+            public ?RequestMatcherStrategy $matchingStrategy = null;
 
             public function whenClientReceivesRequest(Request $request, array $matchers = [Matcher::Method, Matcher::Uri]) : HttpMocker {
                 if ($matchers === []) {
@@ -53,7 +53,7 @@ class MockingInterceptor implements ApplicationInterceptor {
             private bool $isMatched = false;
 
             /**
-             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatchingStrategy} $mocker
+             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatcherStrategy} $mocker
              */
             public function __construct(
                 private readonly HttpMocker $mocker,
@@ -74,7 +74,8 @@ class MockingInterceptor implements ApplicationInterceptor {
                 }
 
                 $fixture = new InFlightFixture($this->mocker->request, $this->mocker->response, $this->clock->now());
-                if ($this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request)) {
+                $results = $this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request);
+                if (array_reduce($results, static fn(bool $carry, MatcherResult $result) => $carry && $result->isMatched, true)) {
                     $response = $fixture->getResponse();
                     $response->setRequest($request);
                     $this->isMatched = true;

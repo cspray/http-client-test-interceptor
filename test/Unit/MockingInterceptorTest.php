@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher
  * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
  */
 final class MockingInterceptorTest extends TestCase {
 

@@ -39,8 +39,8 @@ final class ClassAttributeSpecifyingMatchersPhpUnitIntegrationTest extends TestC
             $strategy
         );
         self::assertSame([
-            Matcher::Uri->getStrategy()
-        ], $strategy->getStrategies());
+            Matcher::Uri
+        ], $strategy->getMatchers());
     }
 
 

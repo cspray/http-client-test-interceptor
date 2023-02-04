@@ -59,12 +59,12 @@ final class ClassAttributePhpUnitIntegrationTest extends TestCase {
 
         self::assertInstanceOf(CompositeMatcher::class, $strategy);
         self::assertSame([
-            Matcher::Body->getStrategy(),
-            Matcher::Headers->getStrategy(),
-            Matcher::Method->getStrategy(),
-            Matcher::ProtocolVersions->getStrategy(),
-            Matcher::Uri->getStrategy()
-        ], $strategy->getStrategies());
+            Matcher::Body,
+            Matcher::Headers,
+            Matcher::Method,
+            Matcher::ProtocolVersions,
+            Matcher::Uri
+        ], $strategy->getMatchers());
     }
 
 }
