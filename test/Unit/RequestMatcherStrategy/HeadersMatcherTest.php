@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatchingStrategy;
+namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher;
+use Cspray\HttpClientTestInterceptor\Matcher;
+use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\HeadersMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
  */
 final class HeadersMatcherTest extends TestCase {
-
-    private HeadersMatcher $subject;
-
-    protected function setUp() : void {
-        $this->subject = new HeadersMatcher();
-    }
 
     public function testEmptyHeadersMatch() : void {
         $fixture = StubFixture::fromRequestFactory(function() {
@@ -28,7 +28,9 @@ final class HeadersMatcherTest extends TestCase {
         $request = new Request('http://example.com');
         $request->setHeaders([]);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::Headers->getStrategy(), 'Fixture and Request headers strictly match');
     }
 
     public function testSingleHeaderDoNotMatch() : void {
@@ -40,7 +42,17 @@ final class HeadersMatcherTest extends TestCase {
         $request = new Request('http://exampmle.net');
         $request->setHeader('Accept', 'text/plain');
 
-        self::assertFalse($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $expectedDiff = (new Differ(new UnifiedDiffOutputBuilder("--- Fixture\n+++ Request\n", false)))
+            ->diff('Accept: application/json', 'Accept: text/plain');
+
+        $expectedLog = <<<TEXT
+Fixture and Request headers do not strictly match!
+
+$expectedDiff
+TEXT;
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertFailedMatcher($results, Matcher::Headers->getStrategy(), $expectedLog);
     }
 
     public function testSingleHeaderDoesMatch() : void {
@@ -52,7 +64,9 @@ final class HeadersMatcherTest extends TestCase {
         $request = new Request('http://exampmle.net');
         $request->setHeader('Accept', 'text/plain');
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::Headers->getStrategy(), 'Fixture and Request headers strictly match');
     }
 
     public function testSingleHeaderMultipleValuesNotOrderDependent() : void {
@@ -64,7 +78,9 @@ final class HeadersMatcherTest extends TestCase {
         $request = new Request('http://exampmle.net');
         $request->setHeader('Accept', ['text/html', 'text/plain']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::Headers->getStrategy(), 'Fixture and Request headers strictly match');
     }
 
     public function testMultipleHeaderMultipleValuesNotOrderDependent() : void {
@@ -80,7 +96,9 @@ final class HeadersMatcherTest extends TestCase {
         $request->setHeader('Accept', ['text/html', 'text/plain']);
         $request->setHeader('Custom', ['bar', 'foo']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::Headers->getStrategy(), 'Fixture and Request headers strictly match');
     }
 
     public function testMultipleHeaderKeysNotOrderDependent() : void {
@@ -96,6 +114,8 @@ final class HeadersMatcherTest extends TestCase {
         $request->setHeader('Custom', ['bar', 'foo']);
         $request->setHeader('Accept', ['text/html', 'text/plain']);
 
-        self::assertTrue($this->subject->doesFixtureMatchRequest($fixture, $request));
+        $results = Matcher::Headers->getStrategy()->doesFixtureMatchRequest($fixture, $request);
+
+        MatcherResultAssertion::assertSuccessfulMatcher($results, Matcher::Headers->getStrategy(), 'Fixture and Request headers strictly match');
     }
 }

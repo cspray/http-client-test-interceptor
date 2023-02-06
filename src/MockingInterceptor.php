@@ -11,9 +11,8 @@ use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\RequestMatchingStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
 
 class MockingInterceptor implements ApplicationInterceptor {
 
@@ -32,13 +31,13 @@ class MockingInterceptor implements ApplicationInterceptor {
         $mocker = new class implements HttpMocker {
             public ?Request $request = null;
             public ?Response $response = null;
-            public ?RequestMatchingStrategy $matchingStrategy = null;
+            public ?RequestMatchStrategy $matchingStrategy = null;
 
-            public function whenClientReceivesRequest(Request $request, array $matchers = [Matchers::Method, Matchers::Uri]) : HttpMocker {
+            public function whenClientReceivesRequest(Request $request, array $matchers = [Matcher::Method, Matcher::Uri]) : HttpMocker {
                 if ($matchers === []) {
                     throw InvalidMock::fromEmptyMatchers();
                 }
-                $this->matchingStrategy = CompositeMatcher::fromMatchers(...$matchers);
+                $this->matchingStrategy = CompositeMatch::fromMatchers(...$matchers);
                 $this->request = $request;
                 return $this;
             }
@@ -54,30 +53,36 @@ class MockingInterceptor implements ApplicationInterceptor {
             private bool $isMatched = false;
 
             /**
-             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatchingStrategy} $mocker
+             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatchStrategy} $mocker
              */
             public function __construct(
                 private readonly HttpMocker $mocker,
                 private readonly Clock $clock
             ) {}
 
-            public function matches(Request $request) : ?Response {
+            public function matches(Request $request) : HttpMockerResult {
                 if ($this->mocker->request === null && $this->mocker->response === null) {
                     throw InvalidMock::fromNoRequestAndResponse();
-                } else if ($this->mocker->response === null) {
+                }
+
+                if ($this->mocker->response === null) {
                     throw InvalidMock::fromNoResponse();
-                } else if ($this->mocker->request === null) {
+                }
+
+                if ($this->mocker->request === null) {
                     throw InvalidMock::fromNoRequest();
                 }
+
                 $fixture = new InFlightFixture($this->mocker->request, $this->mocker->response, $this->clock->now());
-                if ($this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request)) {
+                $results = $this->mocker->matchingStrategy->doesFixtureMatchRequest($fixture, $request);
+                $response = null;
+                if ($results->isMatched) {
                     $response = $fixture->getResponse();
                     $response->setRequest($request);
                     $this->isMatched = true;
-                    return $response;
                 }
 
-                return null;
+                return new HttpMockerResult($response, $results);
             }
 
             public function hasMockBeenMatched() : bool {
@@ -102,7 +107,9 @@ class MockingInterceptor implements ApplicationInterceptor {
 
         if ($totalMocks !== $matchedMocks && $requiredInvocations->isAll()) {
             throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, $matchedMocks, $requiredInvocations);
-        } else if ($matchedMocks === 0 && $requiredInvocations->isAny()) {
+        }
+
+        if ($matchedMocks === 0 && $requiredInvocations->isAny()) {
             throw RequiredMockRequestsNotSent::fromMissingRequiredInvocations($totalMocks, 0, $requiredInvocations);
         }
     }
@@ -112,13 +119,15 @@ class MockingInterceptor implements ApplicationInterceptor {
             throw RequestNotMocked::fromNoMockedRequests();
         }
 
+        $results = [];
         foreach ($this->httpMockers as $httpMocker) {
-            $response = $httpMocker->matches($request);
-            if ($response instanceof Response) {
-                return $response;
+            $mockResults = $httpMocker->matches($request);
+            $results[] = $mockResults->matchResult;
+            if ($mockResults->response instanceof Response) {
+                return $mockResults->response;
             }
         }
 
-        throw RequestNotMocked::fromRequestNotMatched($request);
+        throw RequestNotMocked::fromRequestNotMatched($request, $results);
     }
 }

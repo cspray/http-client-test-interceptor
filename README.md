@@ -71,12 +71,7 @@ Because mocks require more manual setup the way they get matched uses a looser s
 
 namespace Acme\HttpMockingDemo;
 
-use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;
-use Amp\Http\Client\Request;
-use Amp\Http\Client\HttpClientBuilder;
-use Cspray\HttpClientTestInterceptor\MockResponse;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;use League\Uri\Http;
-use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use Cspray\HttpClientTestInterceptor\MockResponse;use League\Uri\Http;use PHPUnit\Framework\TestCase;
 
 final class ApiHeadersMatchingUnitTest extends TestCase {
 
@@ -86,7 +81,7 @@ final class ApiHeadersMatchingUnitTest extends TestCase {
         $request = new Request(Http::createFromString('http://example.com'), 'POST');
         $request->setHeader('Authorization', 'some-token');
         $response = MockResponse::fromBody('My expected body');
-        $this->httpMock()->whenClientReceivesRequest($request, [Matchers::Uri, Matchers::Method, Matchers::Headers])
+        $this->httpMock()->whenClientReceivesRequest($request, [Matcher::Uri, Matcher::Method, Matcher::Headers])
             ->willReturnResponse($response);
             
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
@@ -163,16 +158,10 @@ Out-of-the-box the library will attempt to match every aspect of the Request aga
 
 namespace Acme\HttpFixtureDemo;
 
-use Amp\Http\Client\HttpClientBuilder;
-use Amp\Http\Client\Request;
-use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
-use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
-use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
-use Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers;
-use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use PHPUnit\Framework\TestCase;
 
 #[HttpFixture(__DIR__ . '/http_fixture')]
-#[HttpRequestMatchers(Matchers::Method, Matchers::Uri)]
+#[HttpRequestMatchers(Matcher::Method, Matcher::Uri)]
 final class ApiTest extends TestCase {
 
     use HttpFixtureAwareTestTrait;

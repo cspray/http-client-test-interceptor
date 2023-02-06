@@ -8,6 +8,7 @@ use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
+use Cspray\HttpClientTestInterceptor\MatchResult;
 use Cspray\HttpClientTestInterceptor\MockingInterceptor;
 use Cspray\HttpClientTestInterceptor\MockResponse;
 use League\Uri\Http;
@@ -22,10 +23,12 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\MockResponse
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
  */
 final class MockingInterceptorTest extends TestCase {
 
@@ -62,6 +65,22 @@ final class MockingInterceptorTest extends TestCase {
         $this->expectExceptionMessage('No mocks were found to match request GET https://not.example.com.');
 
         $this->sendRequest(new Request(Http::createFromString('https://not.example.com')));
+    }
+
+    public function testMockRequestNotMatchedHasMatchResultInException() : void {
+        $result = null;
+        try {
+            $this->subject->httpMock()
+                ->whenClientReceivesRequest(new Request(Http::createFromString('https://example.com')))
+                ->willReturnResponse(MockResponse::fromBody('my body'));
+
+            $this->sendRequest(new Request(Http::createFromString('https://not.example.com')));
+        } catch (RequestNotMocked $requestNotMocked) {
+            $result = $requestNotMocked->getMatchResults();
+        }
+
+        self::assertNotEmpty($result);
+        self::assertContainsOnlyInstancesOf(MatchResult::class, $result);
     }
 
     public function testMockDoesNotProvideRequestAndResponseThrowsException() : void {

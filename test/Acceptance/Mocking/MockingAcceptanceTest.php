@@ -20,12 +20,14 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  * @covers \Cspray\HttpClientTestInterceptor\MockResponse
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\CompositeMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\Matchers
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\MethodMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatchingStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\HttpMockerRequiredInvocations
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
  */
 class MockingAcceptanceTest extends TestCase {
 
@@ -55,8 +57,10 @@ class MockingAcceptanceTest extends TestCase {
 
         (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
-        self::expectException(RequiredMockRequestsNotSent::class);
-        self::expectExceptionMessage('There are 1 mocked HTTP interactions but 0 had a matching Request. All mocked HTTP interactions must be requested.');
+        $this->expectException(RequiredMockRequestsNotSent::class);
+        $this->expectExceptionMessage(
+            'There are 1 mocked HTTP interactions but 0 had a matching Request. All mocked HTTP interactions must be requested.'
+        );
 
         $this->validateHttpMocks();
     }
@@ -76,8 +80,8 @@ class MockingAcceptanceTest extends TestCase {
         $client->request(new Request('http://one.example.com'));
         $client->request(new Request('http://three.example.com'));
 
-        self::expectException(RequiredMockRequestsNotSent::class);
-        self::expectExceptionMessage('There are 3 mocked HTTP interactions but 2 had a matching Request. All mocked HTTP interactions must be requested.');
+        $this->expectException(RequiredMockRequestsNotSent::class);
+        $this->expectExceptionMessage('There are 3 mocked HTTP interactions but 2 had a matching Request. All mocked HTTP interactions must be requested.');
 
         $this->validateHttpMocks();
     }
@@ -94,8 +98,10 @@ class MockingAcceptanceTest extends TestCase {
 
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
-        self::expectException(RequiredMockRequestsNotSent::class);
-        self::expectExceptionMessage('There are 3 mocked HTTP interactions but 0 had a matching Request. At least 1 mocked HTTP interaction must be requested.');
+        $this->expectException(RequiredMockRequestsNotSent::class);
+        $this->expectExceptionMessage(
+            'There are 3 mocked HTTP interactions but 0 had a matching Request. At least 1 mocked HTTP interaction must be requested.'
+        );
 
         $this->validateHttpMocks(HttpMockerRequiredInvocations::Any);
     }
