@@ -5,16 +5,16 @@ namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatcherResult;
+use Cspray\HttpClientTestInterceptor\MatchResult;
 use SebastianBergmann\Diff\Differ;
 
-final class ProtocolVersionsMatcher implements RequestMatcherStrategy {
+final class ProtocolVersionsMatch implements RequestMatchStrategy {
 
     public function __construct(
         private readonly Differ $differ
     ) {}
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : array {
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult {
         $fixtureProtocols = $fixture->getRequest()->getProtocolVersions();
         $requestProtocols = $request->getProtocolVersions();
 
@@ -30,8 +30,6 @@ final class ProtocolVersionsMatcher implements RequestMatcherStrategy {
             $log = "Fixture and Request protocol versions do not match!\n\n$diff";
         }
 
-        return [
-            new MatcherResult($isMatched, $this, $log)
-        ];
+        return new MatchResult($isMatched, $this, $log);
     }
 }

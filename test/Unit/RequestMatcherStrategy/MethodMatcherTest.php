@@ -5,16 +5,16 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch;
 use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
  * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
  */
 final class MethodMatcherTest extends TestCase {
 

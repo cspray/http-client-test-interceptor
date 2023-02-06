@@ -6,9 +6,9 @@ use Amp\Http\Client\Body\StringBody;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatcherResult;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
 use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Diff\Differ;
@@ -16,8 +16,8 @@ use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher
- * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher
  */
 final class BodyMatcherTest extends TestCase {
@@ -31,7 +31,7 @@ final class BodyMatcherTest extends TestCase {
         MatcherResultAssertion::assertSuccessfulMatcher(
             $results,
             Matcher::Body->getStrategy(),
-            'Fixture and Request body matches.'
+            'Fixture and Request body match'
         );
     }
 

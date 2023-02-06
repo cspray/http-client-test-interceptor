@@ -2,13 +2,13 @@
 
 namespace Cspray\HttpClientTestInterceptor;
 
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatch;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
@@ -20,15 +20,15 @@ enum Matcher {
     case ProtocolVersions;
     case Uri;
 
-    public function getStrategy() : RequestMatcherStrategy {
+    public function getStrategy() : RequestMatchStrategy {
         static $cache = [];
         if (!isset($cache[$this->name])) {
             $cache[$this->name] = match($this) {
-                self::Body => new BodyMatcher($this->getDiffer()),
-                self::Headers => new StrictHeadersMatcher($this->getDiffer()),
-                self::Method => new MethodMatcher($this->getDiffer()),
-                self::ProtocolVersions => new ProtocolVersionsMatcher($this->getDiffer()),
-                self::Uri => new UriMatcher($this->getDiffer()),
+                self::Body => new BodyMatch($this->getDiffer()),
+                self::Headers => new StrictHeadersMatch($this->getDiffer()),
+                self::Method => new MethodMatch($this->getDiffer()),
+                self::ProtocolVersions => new ProtocolVersionsMatch($this->getDiffer()),
+                self::Uri => new UriMatch($this->getDiffer()),
                 self::All => $this->createCompositeMatcher()
             };
         }
@@ -36,8 +36,8 @@ enum Matcher {
         return $cache[$this->name];
     }
 
-    private function createCompositeMatcher() : CompositeMatcher {
-        return CompositeMatcher::fromMatchers(
+    private function createCompositeMatcher() : CompositeMatch {
+        return CompositeMatch::fromMatchers(
             self::Uri,
             self::Method,
             self::Headers,

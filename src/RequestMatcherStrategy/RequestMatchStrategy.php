@@ -4,15 +4,15 @@ namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
-use Cspray\HttpClientTestInterceptor\MatcherResult;
+use Cspray\HttpClientTestInterceptor\MatchResult;
 
-interface RequestMatcherStrategy {
+interface RequestMatchStrategy {
 
     /**
      * @param Fixture $fixture
      * @param Request $request
-     * @return list<MatcherResult>
+     * @return MatchResult
      */
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : array;
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult;
 
 }

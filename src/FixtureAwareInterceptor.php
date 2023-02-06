@@ -10,16 +10,16 @@ use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Fixture\FixtureRepository;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
 
 final class FixtureAwareInterceptor implements ApplicationInterceptor {
 
     private readonly Clock $clock;
 
     public function __construct(
-        private readonly FixtureRepository      $fixtureRepository,
-        private readonly RequestMatcherStrategy $requestMatchingStrategy,
-        Clock                                   $clock = null
+        private readonly FixtureRepository    $fixtureRepository,
+        private readonly RequestMatchStrategy $requestMatchingStrategy,
+        Clock                                 $clock = null
     ) {
         $this->clock = $clock ?? new SystemClock();
     }
@@ -28,7 +28,7 @@ final class FixtureAwareInterceptor implements ApplicationInterceptor {
         foreach ($this->fixtureRepository->getFixtures() as $fixture) {
             assert($fixture instanceof Fixture);
             $results = $this->requestMatchingStrategy->doesFixtureMatchRequest($fixture, $request);
-            if (array_reduce($results, static fn(bool $carry, MatcherResult $result) => $carry && $result->isMatched, true)) {
+            if ($results->isMatched) {
                 // The $request might match against what we have stored but there might be attributes or other state-specific
                 // stuff that should be included if for some reason the code under test calls $response->getRequest()
                 $response = $fixture->getResponse();
@@ -48,7 +48,7 @@ final class FixtureAwareInterceptor implements ApplicationInterceptor {
         return $this->fixtureRepository;
     }
 
-    public function getRequestMatchingStrategy() : RequestMatcherStrategy {
+    public function getRequestMatchingStrategy() : RequestMatchStrategy {
         return $this->requestMatchingStrategy;
     }
 }

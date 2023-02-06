@@ -20,13 +20,14 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  * @covers \Cspray\HttpClientTestInterceptor\MockResponse
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
  * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatcher
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
+ * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\HttpMockerRequiredInvocations
- * @covers \Cspray\HttpClientTestInterceptor\MatcherResult
+ * @covers \Cspray\HttpClientTestInterceptor\MatchResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
  */
 class MockingAcceptanceTest extends TestCase {
 
