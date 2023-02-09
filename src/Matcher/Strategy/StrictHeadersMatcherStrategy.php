@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
+namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use SebastianBergmann\Diff\Differ;
 
-final class StrictHeadersMatch implements RequestMatchStrategy {
+final class StrictHeadersMatcherStrategy implements MatcherStrategy {
 
     public function __construct(private readonly Differ $differ) {}
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult {
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $fixtureHeaders = [];
         $requestHeaders = [];
 
@@ -41,7 +41,7 @@ final class StrictHeadersMatch implements RequestMatchStrategy {
             );
         }
 
-        return new MatchResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $this, $log);
     }
 
     private function formatRawHeaders(array $headers) : string {

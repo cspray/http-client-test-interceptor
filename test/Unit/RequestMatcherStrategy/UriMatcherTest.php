@@ -4,17 +4,16 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  */
 final class UriMatcherTest extends TestCase {
 

@@ -7,7 +7,9 @@ use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;
 use Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute;
 use Cspray\HttpClientTestInterceptor\Fixture\InMemoryFixtureCache;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
+use Cspray\HttpClientTestInterceptor\Interceptor\FixtureAwareInterceptor;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy;
 use ReflectionClass;
 
 trait HttpFixtureAwareTestTrait {
@@ -61,7 +63,7 @@ trait HttpFixtureAwareTestTrait {
         if ($this->testInterceptor === null) {
             $this->testInterceptor = new FixtureAwareInterceptor(
                 new XmlFileBackedFixtureRepository($httpFixture->path, new InMemoryFixtureCache()),
-                CompositeMatch::fromMatchers(...$matchers)
+                CompositeMatcherStrategy::fromMatchers(...$matchers)
             );
         }
 

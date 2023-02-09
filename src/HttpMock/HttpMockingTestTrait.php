@@ -1,6 +1,8 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\HttpMock;
+
+use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
 
 trait HttpMockingTestTrait {
 

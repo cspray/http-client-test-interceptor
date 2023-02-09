@@ -8,27 +8,27 @@ use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
-use Cspray\HttpClientTestInterceptor\MatchResult;
-use Cspray\HttpClientTestInterceptor\MockingInterceptor;
-use Cspray\HttpClientTestInterceptor\MockResponse;
+use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
+use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use League\Uri\Http;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\MockingInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked
  * @covers \Cspray\HttpClientTestInterceptor\Exception\InvalidMock
- * @covers \Cspray\HttpClientTestInterceptor\MockResponse
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\MockResponse
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
  */
 final class MockingInterceptorTest extends TestCase {
 
@@ -80,7 +80,7 @@ final class MockingInterceptorTest extends TestCase {
         }
 
         self::assertNotEmpty($result);
-        self::assertContainsOnlyInstancesOf(MatchResult::class, $result);
+        self::assertContainsOnlyInstancesOf(MatcherStrategyResult::class, $result);
     }
 
     public function testMockDoesNotProvideRequestAndResponseThrowsException() : void {

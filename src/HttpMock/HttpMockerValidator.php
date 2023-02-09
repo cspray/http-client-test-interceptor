@@ -1,9 +1,8 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\HttpMock;
 
 use Amp\Http\Client\Request;
-use Amp\Http\Client\Response;
 
 interface HttpMockerValidator {
 

@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
+namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use SebastianBergmann\Diff\Differ;
 
-final class MethodMatch implements RequestMatchStrategy {
+final class MethodMatcherStrategy implements MatcherStrategy {
 
     public function __construct(
         private readonly Differ $differ
     ) {}
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult {
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $isMatched = $fixture->getRequest()->getMethod() === $request->getMethod();
 
         if ($isMatched) {
@@ -24,6 +24,6 @@ final class MethodMatch implements RequestMatchStrategy {
             $log = "Fixture and Request method do not match!\n\n$diff";
         }
 
-        return new MatchResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $this, $log);
     }
 }

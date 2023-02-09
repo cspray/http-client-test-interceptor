@@ -3,7 +3,7 @@
 namespace Cspray\HttpClientTestInterceptor\Attribute;
 
 use Attribute;
-use Cspray\HttpClientTestInterceptor\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 final class HttpRequestMatchers {

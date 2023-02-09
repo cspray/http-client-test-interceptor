@@ -1,18 +1,25 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\Interceptor;
 
 use Amp\Cancellation;
 use Amp\Http\Client\ApplicationInterceptor;
 use Amp\Http\Client\DelegateHttpClient;
 use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
+use Cspray\HttpClientTestInterceptor\Clock;
 use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMocker;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerValidator;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\SystemClock;
 
 class MockingInterceptor implements ApplicationInterceptor {
 
@@ -31,13 +38,13 @@ class MockingInterceptor implements ApplicationInterceptor {
         $mocker = new class implements HttpMocker {
             public ?Request $request = null;
             public ?Response $response = null;
-            public ?RequestMatchStrategy $matchingStrategy = null;
+            public ?MatcherStrategy $matchingStrategy = null;
 
             public function whenClientReceivesRequest(Request $request, array $matchers = [Matcher::Method, Matcher::Uri]) : HttpMocker {
                 if ($matchers === []) {
                     throw InvalidMock::fromEmptyMatchers();
                 }
-                $this->matchingStrategy = CompositeMatch::fromMatchers(...$matchers);
+                $this->matchingStrategy = CompositeMatcherStrategy::fromMatchers(...$matchers);
                 $this->request = $request;
                 return $this;
             }
@@ -53,7 +60,7 @@ class MockingInterceptor implements ApplicationInterceptor {
             private bool $isMatched = false;
 
             /**
-             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?RequestMatchStrategy} $mocker
+             * @param HttpMocker&object{request: ?Request, response: ?Response, matchingStrategy: ?MatcherStrategy} $mocker
              */
             public function __construct(
                 private readonly HttpMocker $mocker,

@@ -1,25 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\Interceptor;
 
 use Amp\Cancellation;
 use Amp\Http\Client\ApplicationInterceptor;
 use Amp\Http\Client\DelegateHttpClient;
 use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
+use Cspray\HttpClientTestInterceptor\Clock;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Fixture\FixtureRepository;
 use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\SystemClock;
 
 final class FixtureAwareInterceptor implements ApplicationInterceptor {
 
     private readonly Clock $clock;
 
     public function __construct(
-        private readonly FixtureRepository    $fixtureRepository,
-        private readonly RequestMatchStrategy $requestMatchingStrategy,
-        Clock                                 $clock = null
+        private readonly FixtureRepository $fixtureRepository,
+        private readonly MatcherStrategy   $requestMatchingStrategy,
+        Clock                              $clock = null
     ) {
         $this->clock = $clock ?? new SystemClock();
     }
@@ -48,7 +50,7 @@ final class FixtureAwareInterceptor implements ApplicationInterceptor {
         return $this->fixtureRepository;
     }
 
-    public function getRequestMatchingStrategy() : RequestMatchStrategy {
+    public function getRequestMatchingStrategy() : MatcherStrategy {
         return $this->requestMatchingStrategy;
     }
 }

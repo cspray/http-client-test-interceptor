@@ -2,7 +2,7 @@
 
 namespace Cspray\HttpClientTestInterceptor\Exception;
 
-use Cspray\HttpClientTestInterceptor\HttpMockerRequiredInvocations;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
 
 final class RequiredMockRequestsNotSent extends Exception {
 

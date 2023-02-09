@@ -5,20 +5,16 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 use Amp\Http\Client\Body\StringBody;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatchResult;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\DiffOnlyOutputBuilder;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  */
 final class BodyMatcherTest extends TestCase {
 

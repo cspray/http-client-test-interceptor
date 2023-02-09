@@ -5,29 +5,29 @@ namespace Cspray\HttpClientTestInterceptor\Acceptance\Mocking;
 use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
-use Cspray\HttpClientTestInterceptor\HttpMockerRequiredInvocations;
-use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;
-use Cspray\HttpClientTestInterceptor\MockResponse;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait;
+use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
 use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\MockingInterceptor
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockingTestTrait::getMockingInterceptor
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockingTestTrait::httpMock
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockingTestTrait::validateHttpMocks
+ * @covers \Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::getMockingInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::httpMock
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::validateHttpMocks
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
- * @covers \Cspray\HttpClientTestInterceptor\MockResponse
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\MockResponse
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockerRequiredInvocations
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
  */
 class MockingAcceptanceTest extends TestCase {
 
