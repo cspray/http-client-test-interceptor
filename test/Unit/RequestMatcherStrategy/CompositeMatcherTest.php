@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
- * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy

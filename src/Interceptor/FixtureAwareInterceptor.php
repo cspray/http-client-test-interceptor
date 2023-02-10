@@ -14,7 +14,7 @@ use Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\SystemClock;
 
-final class FixtureAwareInterceptor implements ApplicationInterceptor {
+final class FixtureAwareInterceptor implements TestingInterceptor {
 
     private readonly Clock $clock;
 

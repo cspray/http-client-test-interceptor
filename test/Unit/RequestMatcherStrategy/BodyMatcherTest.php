@@ -12,7 +12,7 @@ use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  */

@@ -28,21 +28,17 @@ enum Matcher {
                 self::Method => new MethodMatcherStrategy($this->getDiffer()),
                 self::ProtocolVersions => new ProtocolVersionMatcherStrategy($this->getDiffer()),
                 self::Uri => new UriMatcherStrategy($this->getDiffer()),
-                self::All => $this->createCompositeMatcher()
+                self::All => CompositeMatcherStrategy::fromMatchers(
+                    self::Uri,
+                    self::Method,
+                    self::Headers,
+                    self::Body,
+                    self::ProtocolVersions,
+                )
             };
         }
 
         return $cache[$this->name];
-    }
-
-    private function createCompositeMatcher() : CompositeMatcherStrategy {
-        return CompositeMatcherStrategy::fromMatchers(
-            self::Uri,
-            self::Method,
-            self::Headers,
-            self::Body,
-            self::ProtocolVersions,
-        );
     }
 
     private function getDiffer() : Differ {

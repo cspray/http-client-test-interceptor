@@ -6,16 +6,16 @@ use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent;
 use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
-use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait;
 use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
+use Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait;
 use League\Uri\Http;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor
- * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::getMockingInterceptor
- * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::httpMock
- * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockingTestTrait::validateHttpMocks
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait::getMockingInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait::httpMock
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait::validateHttpMocks
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequiredMockRequestsNotSent
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
@@ -28,10 +28,13 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
  */
 class MockingAcceptanceTest extends TestCase {
 
-    use HttpMockingTestTrait;
+    use HttpMockAwareTestTrait;
 
     public function testGetInterceptorSameInstance() : void {
         self::assertSame(
@@ -41,8 +44,8 @@ class MockingAcceptanceTest extends TestCase {
     }
 
     public function testMockSuccessfulResponse() : void {
-        $this->httpMock()->whenClientReceivesRequest(new Request(Http::createFromString('http://example.com')))
-            ->willReturnResponse($response = MockResponse::fromBody('body'));
+        $this->httpMock()->onRequest(new Request(Http::createFromString('http://example.com')))
+            ->returnResponse($response = MockResponse::fromBody('body'));
 
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
@@ -52,8 +55,8 @@ class MockingAcceptanceTest extends TestCase {
     }
 
     public function testMockRequestClientNeverCalledThrowsException() : void {
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://example.com'))
-            ->willReturnResponse(MockResponse::fromBody('my body'));
+        $this->httpMock()->onRequest(new Request('http://example.com'))
+            ->returnResponse(MockResponse::fromBody('my body'));
 
         (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
@@ -66,14 +69,14 @@ class MockingAcceptanceTest extends TestCase {
     }
 
     public function testMockRequestClientMultipleRequestsSomeMatched() : void {
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://one.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('first response'));
+        $this->httpMock()->onRequest(new Request('http://one.example.com'))
+            ->returnResponse(MockResponse::fromBody('first response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://two.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('second response'));
+        $this->httpMock()->onRequest(new Request('http://two.example.com'))
+            ->returnResponse(MockResponse::fromBody('second response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://three.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('third response'));
+        $this->httpMock()->onRequest(new Request('http://three.example.com'))
+            ->returnResponse(MockResponse::fromBody('third response'));
 
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
@@ -87,14 +90,14 @@ class MockingAcceptanceTest extends TestCase {
     }
 
     public function testMockRequestClientMultipleRequestsAnyCheck() : void {
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://one.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('first response'));
+        $this->httpMock()->onRequest(new Request('http://one.example.com'))
+            ->returnResponse(MockResponse::fromBody('first response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://two.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('second response'));
+        $this->httpMock()->onRequest(new Request('http://two.example.com'))
+            ->returnResponse(MockResponse::fromBody('second response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://three.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('third response'));
+        $this->httpMock()->onRequest(new Request('http://three.example.com'))
+            ->returnResponse(MockResponse::fromBody('third response'));
 
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
@@ -109,14 +112,14 @@ class MockingAcceptanceTest extends TestCase {
     public function testMockRequestClientMultipleRequestsAnyCheckHasAtLeastOne() : void {
         $this->expectNotToPerformAssertions();
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://one.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('first response'));
+        $this->httpMock()->onRequest(new Request('http://one.example.com'))
+            ->returnResponse(MockResponse::fromBody('first response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://two.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('second response'));
+        $this->httpMock()->onRequest(new Request('http://two.example.com'))
+            ->returnResponse(MockResponse::fromBody('second response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://three.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('third response'));
+        $this->httpMock()->onRequest(new Request('http://three.example.com'))
+            ->returnResponse(MockResponse::fromBody('third response'));
 
         $client = (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 
@@ -128,14 +131,14 @@ class MockingAcceptanceTest extends TestCase {
     public function testMockRequestClientMultipleRequestsNone() : void {
         $this->expectNotToPerformAssertions();
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://one.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('first response'));
+        $this->httpMock()->onRequest(new Request('http://one.example.com'))
+            ->returnResponse(MockResponse::fromBody('first response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://two.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('second response'));
+        $this->httpMock()->onRequest(new Request('http://two.example.com'))
+            ->returnResponse(MockResponse::fromBody('second response'));
 
-        $this->httpMock()->whenClientReceivesRequest(new Request('http://three.example.com'))
-            ->willReturnResponse(MockResponse::fromBody('third response'));
+        $this->httpMock()->onRequest(new Request('http://three.example.com'))
+            ->returnResponse(MockResponse::fromBody('third response'));
 
         (new HttpClientBuilder())->intercept($this->getMockingInterceptor())->build();
 

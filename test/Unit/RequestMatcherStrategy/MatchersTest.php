@@ -3,7 +3,6 @@
 namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
-use Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatch;
 use Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy;

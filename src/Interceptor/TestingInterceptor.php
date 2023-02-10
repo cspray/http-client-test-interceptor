@@ -6,9 +6,4 @@ use Amp\Http\Client\ApplicationInterceptor;
 
 interface TestingInterceptor extends ApplicationInterceptor {
 
-
-
-
-
-
 }
