@@ -5,20 +5,23 @@ namespace Cspray\HttpClientTestInterceptor\Acceptance\FixtureAware;
 use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;
 use Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository;
 use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy;
 use org\bovigo\vfs\vfsStream as VirtualFilesystem;
 use org\bovigo\vfs\vfsStreamDirectory as VirtualDirectory;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Interceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Attribute\HttpFixture
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\XmlFileBackedFixtureRepository
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
  */
 #[HttpFixture('vfs://root')]
 final class ClassAttributePhpUnitIntegrationTest extends TestCase {
@@ -57,7 +60,7 @@ final class ClassAttributePhpUnitIntegrationTest extends TestCase {
     public function testGetTestInterceptorReturnsCorrectRequestMatchingStrategy() : void {
         $strategy = $this->getFixtureAwareInterceptor()->getRequestMatchingStrategy();
 
-        self::assertInstanceOf(CompositeMatch::class, $strategy);
+        self::assertInstanceOf(CompositeMatcherStrategy::class, $strategy);
         self::assertSame([
             Matcher::Body->getStrategy(),
             Matcher::Headers->getStrategy(),

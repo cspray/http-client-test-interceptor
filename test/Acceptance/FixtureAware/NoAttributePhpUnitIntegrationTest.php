@@ -7,7 +7,7 @@ use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\FixtureAwareInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Interceptor\FixtureAwareInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\MissingFixtureAttribute
  * @covers \Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait::getFixtureAwareInterceptor

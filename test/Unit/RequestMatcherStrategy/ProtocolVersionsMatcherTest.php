@@ -4,17 +4,16 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatch;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Unit\MatcherResultAssertion;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  */
 final class ProtocolVersionsMatcherTest extends TestCase {
 

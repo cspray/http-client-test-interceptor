@@ -1,22 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
+namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 
-final class CompositeMatch implements RequestMatchStrategy {
+final class CompositeMatcherStrategy implements MatcherStrategy {
 
     /**
-     * @var RequestMatchStrategy[]
+     * @var MatcherStrategy[]
      */
     private readonly array $strategies;
 
     private function __construct(
-        RequestMatchStrategy $strategy,
-        RequestMatchStrategy... $additionalStrategies
+        MatcherStrategy $strategy,
+        MatcherStrategy... $additionalStrategies
     ) {
         $this->strategies = array_merge([$strategy], $additionalStrategies);
     }
@@ -29,7 +30,7 @@ final class CompositeMatch implements RequestMatchStrategy {
         return $this->strategies;
     }
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult {
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $isMatched = true;
         $log = '';
         foreach ($this->getStrategies() as $strategy) {
@@ -38,6 +39,6 @@ final class CompositeMatch implements RequestMatchStrategy {
             $log .= $result->log . PHP_EOL;
         }
 
-        return new MatchResult($isMatched, $this, trim($log));
+        return new MatcherStrategyResult($isMatched, $this, trim($log));
     }
 }

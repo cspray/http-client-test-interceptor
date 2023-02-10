@@ -2,7 +2,11 @@
 
 namespace Cspray\HttpClientTestInterceptor;
 
-trait HttpMockingTestTrait {
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMocker;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
+use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
+
+trait HttpMockAwareTestTrait {
 
     private ?MockingInterceptor $mockingInterceptor = null;
 

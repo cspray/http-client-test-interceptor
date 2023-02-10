@@ -8,27 +8,30 @@ use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
-use Cspray\HttpClientTestInterceptor\MatchResult;
-use Cspray\HttpClientTestInterceptor\MockingInterceptor;
-use Cspray\HttpClientTestInterceptor\MockResponse;
+use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
+use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use League\Uri\Http;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\MockingInterceptor
+ * @covers \Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor
  * @covers \Cspray\HttpClientTestInterceptor\Exception\Exception
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked
  * @covers \Cspray\HttpClientTestInterceptor\Exception\InvalidMock
- * @covers \Cspray\HttpClientTestInterceptor\MockResponse
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\MockResponse
  * @covers \Cspray\HttpClientTestInterceptor\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
- * @covers \Cspray\HttpClientTestInterceptor\HttpMockerResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
  */
 final class MockingInterceptorTest extends TestCase {
 
@@ -58,8 +61,8 @@ final class MockingInterceptorTest extends TestCase {
 
     public function testMockRequestNotMatchedThrowsExceptionOnRequest() : void {
         $this->subject->httpMock()
-            ->whenClientReceivesRequest(new Request(Http::createFromString('https://example.com')))
-            ->willReturnResponse(MockResponse::fromBody('my body'));
+            ->onRequest(new Request(Http::createFromString('https://example.com')))
+            ->returnResponse(MockResponse::fromBody('my body'));
 
         $this->expectException(RequestNotMocked::class);
         $this->expectExceptionMessage('No mocks were found to match request GET https://not.example.com.');
@@ -71,8 +74,8 @@ final class MockingInterceptorTest extends TestCase {
         $result = null;
         try {
             $this->subject->httpMock()
-                ->whenClientReceivesRequest(new Request(Http::createFromString('https://example.com')))
-                ->willReturnResponse(MockResponse::fromBody('my body'));
+                ->onRequest(new Request(Http::createFromString('https://example.com')))
+                ->returnResponse(MockResponse::fromBody('my body'));
 
             $this->sendRequest(new Request(Http::createFromString('https://not.example.com')));
         } catch (RequestNotMocked $requestNotMocked) {
@@ -80,7 +83,7 @@ final class MockingInterceptorTest extends TestCase {
         }
 
         self::assertNotEmpty($result);
-        self::assertContainsOnlyInstancesOf(MatchResult::class, $result);
+        self::assertContainsOnlyInstancesOf(MatcherStrategyResult::class, $result);
     }
 
     public function testMockDoesNotProvideRequestAndResponseThrowsException() : void {
@@ -93,7 +96,7 @@ final class MockingInterceptorTest extends TestCase {
     }
 
     public function testDoesNotProvideResponseThrowsException() : void {
-        $this->subject->httpMock()->whenClientReceivesRequest(new Request(Http::createFromString('http://example.com')));
+        $this->subject->httpMock()->onRequest(new Request(Http::createFromString('http://example.com')));
 
         $this->expectException(InvalidMock::class);
         $this->expectExceptionMessage('An HttpMocker MUST provide a Response to return but none was provided.');
@@ -102,7 +105,7 @@ final class MockingInterceptorTest extends TestCase {
     }
 
     public function testDoesNotProvideRequestThrowsException() : void {
-        $this->subject->httpMock()->willReturnResponse(MockResponse::fromBody('http testing'));
+        $this->subject->httpMock()->returnResponse(MockResponse::fromBody('http testing'));
 
         $this->expectException(InvalidMock::class);
         $this->expectExceptionMessage('An HttpMocker MUST provide a Request to match against but none was provided.');
@@ -110,16 +113,10 @@ final class MockingInterceptorTest extends TestCase {
         $this->sendRequest(new Request(Http::createFromString('https://example.com')));
     }
 
-    public function testEmptyListOfMatchersThrowsException() : void {
-        $this->expectException(InvalidMock::class);
-        $this->expectExceptionMessage('An HttpMocker MUST provide a list of Matchers to compare against sent Requests but none was provided.');
-        $this->subject->httpMock()->whenClientReceivesRequest(new Request(Http::createFromString('http://example.com')), []);
-    }
-
     public function testRequestMatchesReturnsResponse() : void {
         $this->subject->httpMock()
-            ->whenClientReceivesRequest(new Request(Http::createFromString('https://example.com')))
-            ->willReturnResponse($response = MockResponse::fromBody('my response'));
+            ->onRequest(new Request(Http::createFromString('https://example.com')))
+            ->returnResponse($response = MockResponse::fromBody('my response'));
 
         $actual = $this->sendRequest(new Request(Http::createFromString('https://example.com')));
         self::assertSame($response, $actual);
@@ -127,8 +124,8 @@ final class MockingInterceptorTest extends TestCase {
 
     public function testMatchedResponseHasCorrectRequest() : void {
         $this->subject->httpMock()
-            ->whenClientReceivesRequest(new Request(Http::createFromString('http://something-else.example.com')))
-            ->willReturnResponse(MockResponse::fromBody('something'));
+            ->onRequest(new Request(Http::createFromString('http://something-else.example.com')))
+            ->returnResponse(MockResponse::fromBody('something'));
 
         $actual = $this->sendRequest($request = new Request(Http::createFromString('http://something-else.example.com')));
 

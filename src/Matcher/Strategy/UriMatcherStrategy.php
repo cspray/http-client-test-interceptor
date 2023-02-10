@@ -1,20 +1,21 @@
 <?php declare(strict_types=1);
 
-namespace Cspray\HttpClientTestInterceptor\RequestMatcherStrategy;
+namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
-use Cspray\HttpClientTestInterceptor\MatchResult;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use League\Uri\Components\Query;
 use SebastianBergmann\Diff\Differ;
 
-final class UriMatch implements RequestMatchStrategy {
+final class UriMatcherStrategy implements MatcherStrategy {
 
     public function __construct(
         private readonly Differ $differ
     ) {}
 
-    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatchResult {
+    public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $fixtureUri = $fixture->getRequest()->getUri();
         $requestUri = $request->getUri();
 
@@ -38,6 +39,6 @@ final class UriMatch implements RequestMatchStrategy {
             $log = "Fixture and Request URI do not match!\n\n$diff";
         }
 
-        return new MatchResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $this, $log);
     }
 }

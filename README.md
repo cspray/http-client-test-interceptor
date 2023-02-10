@@ -32,16 +32,11 @@ Unlike writing integration tests that use fixtures there's no setup steps necess
 
 namespace Acme\HttpMockingDemo;
 
-use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;
-use Amp\Http\Client\Request;
-use Amp\Http\Client\HttpClientBuilder;
-use Cspray\HttpClientTestInterceptor\MockResponse;
-use League\Uri\Http;
-use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;use Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait;use League\Uri\Http;use PHPUnit\Framework\TestCase;
 
 final class ApiUnitTest extends TestCase {
 
-    use HttpMockingTestTrait;
+    use HttpMockAwareTestTrait;
     
     public function testGetResource() : void {
         $request = new Request(Http::createFromString('http://example.com'), 'POST');
@@ -71,11 +66,11 @@ Because mocks require more manual setup the way they get matched uses a looser s
 
 namespace Acme\HttpMockingDemo;
 
-use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\HttpMockingTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use Cspray\HttpClientTestInterceptor\MockResponse;use League\Uri\Http;use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;use Cspray\HttpClientTestInterceptor\HttpMockAwareTestTrait;use Cspray\HttpClientTestInterceptor\Matcher\Matcher;use League\Uri\Http;use PHPUnit\Framework\TestCase;
 
 final class ApiHeadersMatchingUnitTest extends TestCase {
 
-    use HttpMockingTestTrait;
+    use HttpMockAwareTestTrait;
     
     public function testGetResource() : void {
         $request = new Request(Http::createFromString('http://example.com'), 'POST');
@@ -158,7 +153,7 @@ Out-of-the-box the library will attempt to match every aspect of the Request aga
 
 namespace Acme\HttpFixtureDemo;
 
-use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;use Cspray\HttpClientTestInterceptor\Matcher;use PHPUnit\Framework\TestCase;
+use Amp\Http\Client\HttpClientBuilder;use Amp\Http\Client\Request;use Cspray\HttpClientTestInterceptor\Attribute\HttpFixture;use Cspray\HttpClientTestInterceptor\Attribute\HttpRequestMatchers;use Cspray\HttpClientTestInterceptor\HttpFixtureAwareTestTrait;use Cspray\HttpClientTestInterceptor\Matcher\Matcher;use PHPUnit\Framework\TestCase;
 
 #[HttpFixture(__DIR__ . '/http_fixture')]
 #[HttpRequestMatchers(Matcher::Method, Matcher::Uri)]

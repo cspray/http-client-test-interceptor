@@ -2,26 +2,26 @@
 
 namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  */
 final class MatchersTest extends TestCase {
 
     public function matchersStrategyProvider() : array {
         return [
-            [Matcher::Body, BodyMatch::class],
-            [Matcher::Headers, StrictHeadersMatch::class],
-            [Matcher::Method, MethodMatch::class],
-            [Matcher::ProtocolVersions, ProtocolVersionsMatch::class],
-            [Matcher::Uri, UriMatch::class]
+            [Matcher::Body, BodyMatcherStrategy::class],
+            [Matcher::Headers, StrictHeadersMatcherStrategy::class],
+            [Matcher::Method, MethodMatcherStrategy::class],
+            [Matcher::ProtocolVersions, ProtocolVersionMatcherStrategy::class],
+            [Matcher::Uri, UriMatcherStrategy::class]
         ];
     }
 

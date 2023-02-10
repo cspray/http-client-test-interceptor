@@ -3,7 +3,6 @@
 namespace Cspray\HttpClientTestInterceptor\Exception;
 
 use Amp\Http\Client\Request;
-use Cspray\HttpClientTestInterceptor\MatchResult;
 
 class RequestNotMocked extends Exception {
 

@@ -4,21 +4,19 @@ namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
-use Cspray\HttpClientTestInterceptor\Matcher;
-use Cspray\HttpClientTestInterceptor\MatchResult;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch;
-use Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\RequestMatchStrategy;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\CompositeMatch
- * @covers \Cspray\HttpClientTestInterceptor\Matcher
- * @covers \Cspray\HttpClientTestInterceptor\MatchResult
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\BodyMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\MethodMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\ProtocolVersionsMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\StrictHeadersMatch
- * @covers \Cspray\HttpClientTestInterceptor\RequestMatcherStrategy\UriMatch
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
  */
 final class CompositeMatcherTest extends TestCase {
 
@@ -38,7 +36,7 @@ final class CompositeMatcherTest extends TestCase {
         $results = Matcher::All->getStrategy()->doesFixtureMatchRequest($fixture, $request);
         $strategy = $results->matcherStrategy;
 
-        self::assertInstanceOf(CompositeMatch::class, $strategy);
+        self::assertInstanceOf(CompositeMatcherStrategy::class, $strategy);
 
         self::assertSame([
             Matcher::Uri->getStrategy(),

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\HttpMock;
 
 enum HttpMockerRequiredInvocations {
     case None;

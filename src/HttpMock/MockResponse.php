@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\HttpMock;
 
 use Amp\ByteStream\ReadableBuffer;
 use Amp\Http\Client\Request;
