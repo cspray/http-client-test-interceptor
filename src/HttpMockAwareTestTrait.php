@@ -2,7 +2,7 @@
 
 namespace Cspray\HttpClientTestInterceptor;
 
-use Cspray\HttpClientTestInterceptor\HttpMock\HttpMocker;
+use Cspray\HttpClientTestInterceptor\HttpMock\HttpMock;
 use Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations;
 use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
 
@@ -22,7 +22,7 @@ trait HttpMockAwareTestTrait {
         $this->getMockingInterceptor()->validate($requiredInvocations);
     }
 
-    public function httpMock() : HttpMocker {
+    public function httpMock() : HttpMock {
         return $this->getMockingInterceptor()->httpMock();
     }
 

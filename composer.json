@@ -6,7 +6,7 @@
     "ext-dom": "*",
     "ext-libxml": "*",
     "amphp/amp": "^v3.0",
-    "amphp/http": "2.x-dev",
+    "amphp/http": "v2.0.0-beta.1",
     "amphp/http-client": "^v5.0.0-beta.8",
     "ramsey/uuid": "^4.3",
     "league/uri": "^6.7",

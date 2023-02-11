@@ -8,7 +8,7 @@ use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 
-interface HttpMocker {
+interface HttpMock {
 
     public function onRequest(Request $request, MatcherStrategy $strategy = null) : self;
 
