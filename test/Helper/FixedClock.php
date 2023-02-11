@@ -2,7 +2,7 @@
 
 namespace Cspray\HttpClientTestInterceptor\Helper;
 
-use Cspray\HttpClientTestInterceptor\Clock;
+use Cspray\HttpClientTestInterceptor\System\Clock;
 use DateTimeImmutable;
 
 final class FixedClock implements Clock {

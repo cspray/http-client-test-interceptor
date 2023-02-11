@@ -24,10 +24,9 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
- * @covers \Cspray\HttpClientTestInterceptor\SystemClock
+ * @covers \Cspray\HttpClientTestInterceptor\System\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerRequiredInvocations
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
- * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy

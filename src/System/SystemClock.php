@@ -1,6 +1,6 @@
 <?php
 
-namespace Cspray\HttpClientTestInterceptor;
+namespace Cspray\HttpClientTestInterceptor\System;
 
 use DateTimeImmutable;
 

@@ -11,7 +11,9 @@ use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\FixedClock;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixtureRepository;
+use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
 use Cspray\HttpClientTestInterceptor\Interceptor\FixtureAwareInterceptor;
+use Cspray\HttpClientTestInterceptor\Interceptor\TestingInterceptorLogger;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use DateTimeImmutable;
@@ -22,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  */
-final class TestInterceptorTest extends TestCase {
+final class FixtureAwareInterceptorTest extends TestCase {
 
     public function testFixtureRepositoryEmptySavesResponseFromDelegatedHttpClient() : void {
         $fixtureRepo = new StubFixtureRepository();
@@ -145,6 +147,74 @@ final class TestInterceptorTest extends TestCase {
 
         // Expecting only the 2 that were already present
         self::assertCount(2, $fixtures);
+    }
+
+    public function testMatcherResultPassedToLogger() : void {
+        $fixtureRepo = new StubFixtureRepository(
+            $fixture1 = StubFixture::fromRequest(new Request('http://example.com')),
+        );
+
+        $request = new Request('http://example.com');
+        $requestMatchingStrategy = $this->getMockBuilder(MatcherStrategy::class)->getMock();
+        $requestMatchingStrategy->expects($this->exactly(1))
+            ->method('doesFixtureMatchRequest')
+            ->with($fixture1, $request)
+            ->willReturn(new MatcherStrategyResult(true, $requestMatchingStrategy, 'Mocked request success'));
+        $clock = new FixedClock(new DateTimeImmutable('2022-01-01 12:00:00'));
+
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+        $request = new Request('http://example.com');
+
+        $logger = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $logger->expects($this->once())
+            ->method('log')
+            ->with($fixture1, $request, $this->isInstanceOf(MatcherStrategyResult::class));
+
+        $subject->addLogger($logger);
+
+        $cancellation = $this->getMockBuilder(Cancellation::class)->getMock();
+        $httpClient = $this->getMockBuilder(DelegateHttpClient::class)->getMock();
+        $httpClient->expects($this->never())->method('request');
+
+        $subject->request($request, $cancellation, $httpClient);
+    }
+
+    public function testGettingAddedObservers() : void {
+        $loggerA = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $loggerB = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+
+        $fixtureRepo = new StubFixtureRepository();
+        $requestMatchingStrategy = $this->getMockBuilder(MatcherStrategy::class)->getMock();
+        $requestMatchingStrategy->expects($this->never())->method('doesFixtureMatchRequest');
+        $clock = new FixedClock(new DateTimeImmutable('2022-01-01 12:00:00'));
+
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+
+        $subject->addLogger($loggerA);
+        $subject->addLogger($loggerB);
+
+        self::assertSame([$loggerA, $loggerB], $subject->getLoggers());
+    }
+
+    public function testRemovingObservers() : void {
+        $loggerA = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $loggerB = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+
+        $fixtureRepo = new StubFixtureRepository();
+        $requestMatchingStrategy = $this->getMockBuilder(MatcherStrategy::class)->getMock();
+        $requestMatchingStrategy->expects($this->never())->method('doesFixtureMatchRequest');
+        $clock = new FixedClock(new DateTimeImmutable('2022-01-01 12:00:00'));
+
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+
+        $subject->addLogger($loggerA);
+        $subject->addLogger($loggerB);
+
+        self::assertSame([$loggerA, $loggerB], $subject->getLoggers());
+
+        $subject->removeLogger($loggerB);
+
+        self::assertSame([$loggerA], $subject->getLoggers());
     }
 
 }

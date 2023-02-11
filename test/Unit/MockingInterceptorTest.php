@@ -10,6 +10,7 @@ use Cspray\HttpClientTestInterceptor\Exception\InvalidMock;
 use Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked;
 use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
 use Cspray\HttpClientTestInterceptor\Interceptor\MockingInterceptor;
+use Cspray\HttpClientTestInterceptor\Interceptor\TestingInterceptorLogger;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use League\Uri\Http;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -21,14 +22,13 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Exception\RequestNotMocked
  * @covers \Cspray\HttpClientTestInterceptor\Exception\InvalidMock
  * @covers \Cspray\HttpClientTestInterceptor\HttpMock\MockResponse
- * @covers \Cspray\HttpClientTestInterceptor\SystemClock
+ * @covers \Cspray\HttpClientTestInterceptor\System\SystemClock
  * @covers \Cspray\HttpClientTestInterceptor\Fixture\InFlightFixture
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\CompositeMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
- * @covers \Cspray\HttpClientTestInterceptor\HttpMock\HttpMockerResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
@@ -130,6 +130,46 @@ final class MockingInterceptorTest extends TestCase {
         $actual = $this->sendRequest($request = new Request(Http::createFromString('http://something-else.example.com')));
 
         self::assertSame($request, $actual->getRequest());
+    }
+
+    public function testMatcherResultPassedToLogger() : void {
+        $mock = $this->subject->httpMock()->onRequest(new Request('http://example.com'))
+            ->returnResponse(MockResponse::fromBody('something'));
+
+        $request = new Request('http://example.com');
+
+        $logger = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $logger->expects($this->once())
+            ->method('log')
+            ->with($mock->getFixture(), $request, $this->isInstanceOf(MatcherStrategyResult::class));
+
+        $this->subject->addLogger($logger);
+
+        $this->sendRequest($request);
+    }
+
+    public function testGettingAddedObservers() : void {
+        $loggerA = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $loggerB = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+
+        $this->subject->addLogger($loggerA);
+        $this->subject->addLogger($loggerB);
+
+        self::assertSame([$loggerA, $loggerB], $this->subject->getLoggers());
+    }
+
+    public function testRemovingObservers() : void {
+        $loggerA = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+        $loggerB = $this->getMockBuilder(TestingInterceptorLogger::class)->getMock();
+
+        $this->subject->addLogger($loggerA);
+        $this->subject->addLogger($loggerB);
+
+        self::assertSame([$loggerA, $loggerB], $this->subject->getLoggers());
+
+        $this->subject->removeLogger($loggerB);
+
+        self::assertSame([$loggerA], $this->subject->getLoggers());
     }
 
 }
