@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class MatchersTest extends TestCase {
 
-    public function matchersStrategyProvider() : array {
+    public static function matchersStrategyProvider() : array {
         return [
             [Matcher::Body, BodyMatcherStrategy::class],
             [Matcher::Headers, StrictHeadersMatcherStrategy::class],

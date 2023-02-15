@@ -9,6 +9,7 @@ use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\FixedClock;
+use Cspray\HttpClientTestInterceptor\Helper\FixtureAndRequestCollectingMatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixtureRepository;
 use Cspray\HttpClientTestInterceptor\HttpMock\MockResponse;
@@ -73,16 +74,10 @@ final class FixtureAwareInterceptorTest extends TestCase {
         );
 
         $request = new Request('http://sub.example.com');
-        $requestMatchingStrategy = $this->getMockBuilder(MatcherStrategy::class)->getMock();
-        $requestMatchingStrategy->expects($this->exactly(2))
-            ->method('doesFixtureMatchRequest')
-            ->withConsecutive(
-                [$fixture1, $request],
-                [$fixture2, $request]
-            )->willReturn(new MatcherStrategyResult(false, $requestMatchingStrategy, 'Mock request failure'));
+        $matcherStrategy = new FixtureAndRequestCollectingMatcherStrategy(false, 'Mock strategy log');
         $clock = new FixedClock($date = new DateTimeImmutable('2022-01-01 12:00:00'));
 
-        $subject = new FixtureAwareInterceptor($fixtureRepo, $requestMatchingStrategy, $clock);
+        $subject = new FixtureAwareInterceptor($fixtureRepo, $matcherStrategy, $clock);
 
         $response = new Response(
             '1.1',
@@ -100,6 +95,11 @@ final class FixtureAwareInterceptorTest extends TestCase {
             ->willReturn($response);
 
         $actualResponse = $subject->request($request, $cancellation, $httpClient);
+
+        self::assertSame([
+            [$fixture1, $request],
+            [$fixture2, $request]
+        ], $matcherStrategy->getPairs());
 
         self::assertSame($response, $actualResponse);
 

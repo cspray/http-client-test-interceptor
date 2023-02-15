@@ -16,11 +16,11 @@ trait HttpFixtureAwareTestTrait {
 
     private ?FixtureAwareInterceptor $testInterceptor = null;
 
-    abstract public function getName(bool $withDataSet = true) : string;
+    abstract public function name() : string;
 
     private function getFixtureAwareInterceptor() : FixtureAwareInterceptor {
         $reflection = new ReflectionClass($this::class);
-        $reflectionMethod = $reflection->getMethod($this->getName(false));
+        $reflectionMethod = $reflection->getMethod($this->name());
 
         $testAttributes = $reflectionMethod->getAttributes(HttpFixture::class);
         $testCaseAttributes = $reflection->getAttributes(HttpFixture::class);
@@ -29,7 +29,7 @@ trait HttpFixtureAwareTestTrait {
         if (count($testAttributes) === 0 && count($testCaseAttributes) === 0) {
             throw MissingFixtureAttribute::fromMissingHttpFixtureAttribute(
                 $this::class,
-                $this->getName(false)
+                $this->name()
             );
         }
 
