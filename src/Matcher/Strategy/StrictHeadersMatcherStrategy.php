@@ -36,8 +36,8 @@ final class StrictHeadersMatcherStrategy implements MatcherStrategy {
         } else {
             $log = "Fixture and Request headers do not strictly match!\n\n";
             $log .= $this->differ->diff(
-                $this->formatRawHeaders($fixture->getRequest()->getRawHeaders()),
-                $this->formatRawHeaders($request->getRawHeaders())
+                $this->formatRawHeaders($fixture->getRequest()->getHeaderPairs()),
+                $this->formatRawHeaders($request->getHeaderPairs())
             );
         }
 
