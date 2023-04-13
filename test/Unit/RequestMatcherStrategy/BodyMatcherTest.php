@@ -2,7 +2,7 @@
 
 namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
-use Amp\Http\Client\Body\StringBody;
+use Amp\Http\Client\BufferedContent;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
@@ -22,7 +22,7 @@ final class BodyMatcherTest extends MatcherStrategyTestCase {
     }
 
     protected function request() : Request {
-        return new Request('http://not.example.com', body: new StringBody('The request body'));
+        return new Request('http://not.example.com', body: BufferedContent::fromString('The request body'));
     }
 
     protected function matchingFixture() : Fixture {
