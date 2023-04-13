@@ -15,8 +15,8 @@ final class BodyMatcherStrategy implements MatcherStrategy {
     public function __construct(private readonly Differ $differ) {}
 
     public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
-        $fixtureBody = $fixture->getRequest()->getBody()->createBodyStream()->read();
-        $requestBody = $request->getBody()->createBodyStream()->read();
+        $fixtureBody = $fixture->getRequest()->getBody()->getContent()->read();
+        $requestBody = $request->getBody()->getContent()->read();
         $isMatched = $fixtureBody === $requestBody;
 
         $diff = '';

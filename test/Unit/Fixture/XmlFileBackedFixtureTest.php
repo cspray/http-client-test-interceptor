@@ -173,7 +173,7 @@ XML;
         $this->writeFile('body.xml', 'request-simple-body.xml');
         $fixture = new XmlFileBackedFixture('vfs://root/body.xml');
 
-        self::assertSame('request content', $fixture->getRequest()->getBody()->createBodyStream()->read());
+        self::assertSame('request content', $fixture->getRequest()->getBody()->getContent()->read());
     }
 
     public function testFileWithStatusNotFoundReturnsCorrectResponseStatusCode() : void {
