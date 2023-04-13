@@ -32,13 +32,13 @@ final class CompositeMatcherStrategy implements MatcherStrategy {
 
     public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $isMatched = true;
-        $log = '';
+        $diffs = [];
         foreach ($this->getStrategies() as $strategy) {
             $result = $strategy->doesFixtureMatchRequest($fixture, $request);
             $isMatched = $isMatched && $result->isMatched;
-            $log .= $result->log . PHP_EOL;
+            $diffs = [...$diffs, ...$result->diffs];
         }
 
-        return new MatcherStrategyResult($isMatched, $this, trim($log));
+        return new MatcherStrategyResult($isMatched, $request, $fixture, $this, $diffs);
     }
 }

@@ -4,6 +4,8 @@ namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use SebastianBergmann\Diff\Differ;
@@ -17,13 +19,17 @@ final class BodyMatcherStrategy implements MatcherStrategy {
         $requestBody = $request->getBody()->createBodyStream()->read();
         $isMatched = $fixtureBody === $requestBody;
 
-        if ($isMatched) {
-            $log = "Fixture and Request body match";
-        } else {
+        $diff = '';
+        if (!$isMatched) {
             $diff = $this->differ->diff($fixtureBody, $requestBody);
-            $log = "Fixture and Request body do not match!\n\n$diff";
         }
 
-        return new MatcherStrategyResult($isMatched, $this, $log);
+        return new MatcherStrategyResult(
+            $isMatched,
+            $request,
+            $fixture,
+            $this,
+            [new MatcherDiff('body', $diff)]
+        );
     }
 }

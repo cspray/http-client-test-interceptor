@@ -7,33 +7,44 @@ use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\MethodMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff
  */
-final class MethodMatcherTest extends MatcherStrategyTestCase {
+final class StrictHeadersSingleValueMatcherTest extends MatcherStrategyTestCase {
 
     protected function subject() : MatcherStrategy {
-        return Matcher::Method->getStrategy();
+        return Matcher::Headers->getStrategy();
     }
 
     protected function request() : Request {
-        return new Request('http://example.com', 'PUT');
+        $request = new Request('http://exampmle.net');
+        $request->setHeader('Accept', 'text/plain');
+        return $request;
     }
 
     protected function matchingFixture() : Fixture {
-        return StubFixture::fromRequest(new Request('http://example.com', 'PUT'));
+        return StubFixture::fromRequestFactory(function() {
+            $request = new Request('http://www.example.com');
+            $request->setHeader('Accept', 'text/plain');
+            return $request;
+        });
     }
 
     protected function nonMatchingFixture() : Fixture {
-        return StubFixture::fromRequest(new Request('http://example.com', 'GET'));
+        return StubFixture::fromRequestFactory(function() {
+            $request = new Request('http://www.example.com');
+            $request->setHeader('Accept', 'application/json');
+            return $request;
+        });
     }
 
     protected function expectedDiffLabel() : string {
-        return 'method';
+        return 'headers';
     }
 
     protected function expectedNonMatchingDiff() : string {
@@ -41,10 +52,9 @@ final class MethodMatcherTest extends MatcherStrategyTestCase {
 --- Fixture
 +++ Request
 @@ @@
--GET
-+PUT
+-Accept: application/json
++Accept: text/plain
 
 TEXT;
     }
-
 }

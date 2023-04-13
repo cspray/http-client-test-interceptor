@@ -4,6 +4,7 @@ namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use SebastianBergmann\Diff\Differ;
@@ -31,17 +32,15 @@ final class StrictHeadersMatcherStrategy implements MatcherStrategy {
 
         $isMatched = $fixtureHeaders === $requestHeaders;
 
-        if ($isMatched) {
-            $log = 'Fixture and Request headers strictly match';
-        } else {
-            $log = "Fixture and Request headers do not strictly match!\n\n";
-            $log .= $this->differ->diff(
+        $diff = '';
+        if (!$isMatched) {
+            $diff = $this->differ->diff(
                 $this->formatRawHeaders($fixture->getRequest()->getHeaderPairs()),
                 $this->formatRawHeaders($request->getHeaderPairs())
             );
         }
 
-        return new MatcherStrategyResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $request, $fixture, $this, [new MatcherDiff('headers', $diff)]);
     }
 
     private function formatRawHeaders(array $headers) : string {

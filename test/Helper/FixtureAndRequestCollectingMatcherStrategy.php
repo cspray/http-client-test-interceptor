@@ -4,6 +4,7 @@ namespace Cspray\HttpClientTestInterceptor\Helper;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 
@@ -17,15 +18,20 @@ final class FixtureAndRequestCollectingMatcherStrategy implements MatcherStrateg
     private array $pairs = [];
 
     public function __construct(
-        bool $isMatched,
-        string $log
+        private readonly bool $isMatched,
+        private readonly string $log
     ) {
-        $this->result = new MatcherStrategyResult($isMatched, $this, $log);
     }
 
     public function doesFixtureMatchRequest(Fixture $fixture, Request $request) : MatcherStrategyResult {
         $this->pairs[] = [$fixture, $request];
-        return $this->result;
+        return new MatcherStrategyResult(
+            $this->isMatched,
+            $request,
+            $fixture,
+            $this,
+            [new MatcherDiff('label', 'Diff')]
+        );
     }
 
     /**

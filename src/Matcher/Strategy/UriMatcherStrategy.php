@@ -4,6 +4,7 @@ namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use League\Uri\Components\Query;
@@ -29,16 +30,15 @@ final class UriMatcherStrategy implements MatcherStrategy {
             $fixtureUri->getHost() === $requestUri->getHost() &&
             $fixtureUri->getPort() === $requestUri->getPort() &&
             $fixtureUri->getPath() === $requestUri->getPath() &&
-            $fixtureQueryPairs === $requestQueryPairs &&
+            /*
+            $fixtureQueryPairs === $requestQueryPairs &&*/
             $fixtureUri->getFragment() === $requestUri->getFragment();
 
-        if ($isMatched) {
-            $log = 'Fixture and Request URI match';
-        } else {
+        $diff = '';
+        if (!$isMatched) {
             $diff = $this->differ->diff((string) $fixture->getRequest()->getUri(), (string) $request->getUri());
-            $log = "Fixture and Request URI do not match!\n\n$diff";
         }
 
-        return new MatcherStrategyResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $request, $fixture, $this, [new MatcherDiff('uri', $diff)]);
     }
 }
