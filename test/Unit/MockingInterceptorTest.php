@@ -54,19 +54,54 @@ final class MockingInterceptorTest extends TestCase {
     }
 
     public function testMockingInterceptorNoMocksDefinedThrowsExceptionOnRequest() : void {
+        $expected = <<<TEXT
+No matching mocks were found for the given request:
+
+GET /
+
+No fixtures were present to match against!
+
+TEXT;
+
         $this->expectException(RequestNotMocked::class);
-        $this->expectExceptionMessage('No requests have been mocked. Please call MockingInterceptor::getHttpMocker to add a mocked request and response.');
+        $this->expectExceptionMessage($expected);
 
         $this->sendRequest(new Request(Http::createFromString('http://example.com')));
     }
 
     public function testMockRequestNotMatchedThrowsExceptionOnRequest() : void {
-        $this->subject->httpMock()
-            ->onRequest(new Request(Http::createFromString('https://example.com')))
+        $httpMock = $this->subject->httpMock();
+            $httpMock->onRequest(new Request(Http::createFromString('https://example.com')))
             ->returnResponse(MockResponse::fromBody('my body'));
 
+        $expected = <<<TEXT
+No matching mocks were found for the given request:
+
+GET /
+
+Attempted to match against 1 fixture.
+
+Fixture ID {$httpMock->getFixture()->getId()}
+************************************ DIFFS ************************************
+uri
+--- Fixture
++++ Request
+@@ @@
+-https://example.com
++https://not.example.com
+
+method
+
+headers
+
+body
+
+protocol
+
+TEXT;
+
         $this->expectException(RequestNotMocked::class);
-        $this->expectExceptionMessage('No mocks were found to match request GET https://not.example.com.');
+        $this->expectExceptionMessage($expected);
 
         $this->sendRequest(new Request(Http::createFromString('https://not.example.com')));
     }

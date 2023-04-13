@@ -111,7 +111,7 @@ class MockingInterceptor implements TestingInterceptor {
 
     public function request(Request $request, Cancellation $cancellation, DelegateHttpClient $httpClient) : Response {
         if ($this->httpMockers === []) {
-            throw RequestNotMocked::fromNoMockedRequests();
+            throw RequestNotMocked::fromMatcherStrategyResults($request, []);
         }
 
         $results = [];
@@ -132,7 +132,7 @@ class MockingInterceptor implements TestingInterceptor {
             }
         }
 
-        throw RequestNotMocked::fromRequestNotMatched($request, $results);
+        throw RequestNotMocked::fromMatcherStrategyResults($request, $results);
     }
 
     public function addLogger(TestingInterceptorLogger $logger) : void {
