@@ -32,6 +32,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff
  */
 final class MockingInterceptorTest extends TestCase {
 

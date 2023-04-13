@@ -4,6 +4,7 @@ namespace Cspray\HttpClientTestInterceptor\Matcher\Strategy;
 
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
+use Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult;
 use SebastianBergmann\Diff\Differ;
@@ -23,13 +24,14 @@ final class ProtocolVersionMatcherStrategy implements MatcherStrategy {
 
         $isMatched = $fixtureProtocols === $requestProtocols;
 
-        if ($isMatched) {
-            $log = 'Fixture and Request protocol versions match';
-        } else {
-            $diff = $this->differ->diff($fixture->getRequest()->getProtocolVersions(), $request->getProtocolVersions());
-            $log = "Fixture and Request protocol versions do not match!\n\n$diff";
+        $diff = '';
+        if (!$isMatched) {
+            $diff = $this->differ->diff(
+                implode(', ', $fixtureProtocols),
+                implode(', ', $requestProtocols)
+            );
         }
 
-        return new MatcherStrategyResult($isMatched, $this, $log);
+        return new MatcherStrategyResult($isMatched, $request, $fixture, $this, [new MatcherDiff('protocol', $diff)]);
     }
 }

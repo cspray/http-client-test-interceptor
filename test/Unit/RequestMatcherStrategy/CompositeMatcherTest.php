@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\ProtocolVersionMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\StrictHeadersMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff
  */
 final class CompositeMatcherTest extends TestCase {
 
@@ -47,22 +48,13 @@ final class CompositeMatcherTest extends TestCase {
         ], $strategy->getStrategies());
     }
 
-    public function testAllComposedMatcherResultsIsCorrectLog() : void {
+    public function testAllComposedMatcherResultsHasCorrectDiffOutput() : void {
         $fixture = StubFixture::fromRequest(new Request('https://www.example.com/some/path', 'POST'));
         $request = new Request('https://www.example.com/some/path', 'POST');
 
         $results = Matcher::All->getStrategy()->doesFixtureMatchRequest($fixture, $request);
 
-        $expectedLog = <<<TEXT
-Fixture and Request URI match
-Fixture and Request method match
-Fixture and Request headers strictly match
-Fixture and Request body match
-Fixture and Request protocol versions match
-TEXT;
-
-        self::assertSame($expectedLog, $results->log);
-
+        self::assertCount(5, $results->diffs);
     }
 
 }

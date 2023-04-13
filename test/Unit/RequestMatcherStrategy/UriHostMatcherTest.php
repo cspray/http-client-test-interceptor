@@ -2,39 +2,41 @@
 
 namespace Cspray\HttpClientTestInterceptor\Unit\RequestMatcherStrategy;
 
-use Amp\Http\Client\Body\StringBody;
 use Amp\Http\Client\Request;
 use Cspray\HttpClientTestInterceptor\Fixture\Fixture;
 use Cspray\HttpClientTestInterceptor\Helper\StubFixture;
 use Cspray\HttpClientTestInterceptor\Matcher\Matcher;
 use Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategy;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**
- * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\BodyMatcherStrategy
- * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\Strategy\UriMatcherStrategy
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\Matcher
+ * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherStrategyResult
  * @covers \Cspray\HttpClientTestInterceptor\Matcher\MatcherDiff
  */
-final class BodyMatcherTest extends MatcherStrategyTestCase {
+final class UriHostMatcherTest extends MatcherStrategyTestCase {
 
     protected function subject() : MatcherStrategy {
-        return Matcher::Body->getStrategy();
+        return Matcher::Uri->getStrategy();
     }
 
     protected function request() : Request {
-        return new Request('http://not.example.com', body: new StringBody('The request body'));
+        return new Request('http://example.com');
     }
 
     protected function matchingFixture() : Fixture {
-        return StubFixture::fromRequest(new Request('http://example.com', body: 'The request body'));
+        return StubFixture::fromRequest(new Request('http://example.com'));
     }
 
     protected function nonMatchingFixture() : Fixture {
-        return StubFixture::fromRequest(new Request('http://example.com', body: 'A different request body'));
+        return StubFixture::fromRequest(new Request('http://sub.example.com'));
     }
 
     protected function expectedDiffLabel() : string {
-        return 'body';
+        return 'uri';
     }
 
     protected function expectedNonMatchingDiff() : string {
@@ -42,8 +44,8 @@ final class BodyMatcherTest extends MatcherStrategyTestCase {
 --- Fixture
 +++ Request
 @@ @@
--A different request body
-+The request body
+-http://sub.example.com
++http://example.com
 
 TEXT;
     }
