@@ -6,11 +6,11 @@
     "ext-dom": "*",
     "ext-libxml": "*",
     "amphp/amp": "^v3.0",
-    "amphp/http": "v2.0",
+    "amphp/http": "^v2.0",
     "amphp/http-client": "^v5.0",
     "ramsey/uuid": "^4.3",
-    "league/uri": "^6.7",
-    "league/uri-components": "^2.4",
+    "league/uri": "^7.4",
+    "league/uri-components": "^7.4",
     "sebastian/diff": "^4.0 | ^5.0"
   },
   "require-dev": {

@@ -89,7 +89,7 @@ final class XmlFileBackedFixture implements Fixture {
         $uriUser = $xpath->query('/mf:fixture/mf:request/mf:uri/mf:userInfo/mf:user/text()[1]')[0]?->nodeValue;
         $uriPass = $xpath->query('/mf:fixture/mf:request/mf:uri/mf:userInfo/mf:password/text()[1]')[0]?->nodeValue;
 
-        $query = Query::createFromPairs();
+        $query = Query::new();
         $uriQueryParameters = $xpath->query('/mf:fixture/mf:request/mf:uri/mf:queryParameters/mf:queryParameter');
         foreach ($uriQueryParameters as $queryParameter) {
             assert($queryParameter instanceof DOMElement);
